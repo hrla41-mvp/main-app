@@ -1,0 +1,17 @@
+.MainChatRoom {
+  color: white;
+  height: 10vh;
+  background-color: gray;
+}
+
+.typeNewMessage {
+  /*
+  position: fixed;
+  bottom: 1%;
+  left: 0.5%;
+  height: 4vh;
+  border-radius: 6px;
+  border: 0.2px solid black;
+  width: 15%;
+  outline: none; */
+}

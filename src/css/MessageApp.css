@@ -1,0 +1,11 @@
+.messageAppContainer {
+  height: 100vh;
+}
+
+.messageAppRow {
+  height:100%;
+}
+
+.messageAppCol {
+  border: 1px solid black;
+}
