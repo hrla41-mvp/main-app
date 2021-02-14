@@ -1,7 +1,6 @@
 import { Button, Form, Container, Alert } from 'react-bootstrap';
 import React, { Component } from 'react';
 import firebase from '../Firebase';
-console.log(firebase);
 
 
 export default class SignUp extends Component {

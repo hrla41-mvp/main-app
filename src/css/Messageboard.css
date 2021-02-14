@@ -1,3 +1,15 @@
 .MessageBoard {
   color: white;
 }
+
+.RoomName {
+  text-align: center;
+  margin-top: 3%;
+  font-size: 70px;
+}
+
+.MessagesView {
+  color: green;
+  height: 80vh;
+
+}

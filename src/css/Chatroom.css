@@ -1,17 +1,22 @@
 .MainChatRoom {
   color: white;
-  height: 10vh;
+  height: 95vh;
   background-color: gray;
 }
 
-.typeNewMessage {
+.fixedContainer {
+  width: 386px;
   /*
   position: fixed;
-  bottom: 1%;
-  left: 0.5%;
-  height: 4vh;
-  border-radius: 6px;
-  border: 0.2px solid black;
-  width: 15%;
-  outline: none; */
+  bottom: 10px;
+  left: 15px;
+  padding-right: 0px;
+  */
+}
+
+.newChatMessage {
+  height: 36px;
+  width: 316px;
+  margin-right: 20px;
+  outline: none;
 }
