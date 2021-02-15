@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/Chatroom.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
-
+import RenderRooms from './RenderRooms'
 class Chatroom extends React.Component {
   constructor() {
     super()
@@ -12,7 +12,9 @@ class Chatroom extends React.Component {
   render() {
     return (
       <>
-        <Container className="MainChatRoom"></Container>
+        <Container className="MainChatRoom">
+          <RenderRooms />
+        </Container>
         <div className="fixedContainer">
           <div>
             <input type="text" className="newChatMessage" placeholder="Add A New Room"></input>

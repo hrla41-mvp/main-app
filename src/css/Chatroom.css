@@ -2,6 +2,7 @@
   color: white;
   height: 95vh;
   background-color: gray;
+  overflow: scroll;
 }
 
 .fixedContainer {

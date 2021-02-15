@@ -1,5 +1,6 @@
 import React from 'react';
 import '../css/FriendsList.css';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 
 class FriendsList extends React.Component {
   constructor() {
@@ -11,7 +12,17 @@ class FriendsList extends React.Component {
   render () {
     return(
       <div className="FriendsList">
-        FriendsList
+        <Container fluid>
+          <Row>
+            <Col className="RoomNameCard">Room Name</Col>
+          </Row>
+        </Container>
+        <Container fluid>
+          <Row>
+            <Col className="PeopleInRoom">People</Col>
+          </Row>
+            <input type="text" placeholder="Type a username" className="EnterUsername"></input>
+        </Container>
       </div>
     )
   }

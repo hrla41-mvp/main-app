@@ -1,6 +1,7 @@
 import React from 'react';
 import '../css/Messageboard.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
+import RenderMessages from './RenderMessages.js';
 
 class MessageBoard extends React.Component {
   constructor() {
@@ -12,15 +13,18 @@ class MessageBoard extends React.Component {
   render() {
     return (
       <div className="MessageBoard">
-        <Container fluid>
+        <Container className="RoomNameHolder" fluid>
           <Row>
-            <Col className="RoomName">Room Here</Col>
+            <Col className="RoomName">Room Here</Col> {/* Can pass props and add room name here to dynamically render the room name */}
           </Row>
         </Container>
         <Container fluid>
           <Row>
-            <Col className="MessagesView">Room Here</Col>
+            <Col className="MessagesView"><RenderMessages /></Col>
           </Row>
+        </Container>
+        <Container>
+          <input type="text" placeholder="What's on your Mind?"  className="sendMessageForm" important></input>
         </Container>
       </div>
     )

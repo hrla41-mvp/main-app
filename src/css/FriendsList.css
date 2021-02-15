@@ -1,3 +1,31 @@
 .FriendsList {
+  /* border: 5px solid black; */
   color: white;
+  margin-top: 13px;
+  height: 100vh;
+}
+
+.RoomNameCard {
+  padding-top: 8px;
+  border: 1px solid black;
+  height: 6vh;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 0.4rem;
+}
+
+.PeopleInRoom {
+  border: 1px solid black;
+  height: 20vh;
+  text-align: left;
+  border-radius: 5px;
+  margin-bottom: 0.4rem;
+}
+
+.EnterUsername {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid black;
+  outline: none;
+  height: 30px;
 }

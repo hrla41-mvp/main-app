@@ -4,12 +4,27 @@
 
 .RoomName {
   text-align: center;
-  margin-top: 3%;
-  font-size: 70px;
+  margin-top: 2%;
+  font-size: 60px;
+  border: 1px solid black;
 }
 
 .MessagesView {
   color: green;
   height: 80vh;
+  overflow: scroll;
+  border: 1px solid black;
+}
 
+.sendMessageForm {
+  width: 100%;
+  outline: none;
+  height: 36px;
+  float: bottom;
+  border-radius: 4px;
+  border: 1px solid black;
+}
+
+.RoomNameHolder {
+  margin-bottom: 0.5rem;
 }
