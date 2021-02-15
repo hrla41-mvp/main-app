@@ -41,6 +41,11 @@ app.get("/roomsList:user_id", (req, res) => {
 app.post("/feed:room_id", (req, res) => {
 
 });
+
+app.post('/upload', uploadS3.array('profilePic'), (req, res) => {
+  // res.json({ status: 'OK', uploaded: req.files.length });
+  res.status(200).send(req.files[0].location);
+})
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
@@ -53,4 +58,4 @@ app.listen(PORT, () => {
 // |/profilePage:user_id      |
 // |/roomsList:user_id        |
 // |/feed:room_id             |
-// |/friends:user_id  
+// |/friends:user_id
