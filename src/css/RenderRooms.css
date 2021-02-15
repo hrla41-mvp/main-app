@@ -1,0 +1,19 @@
+.RoomsCard {
+  margin-bottom: 0rem;
+  margin-top: 1rem;
+  text-align: center;
+  align-items: center;
+  font-size: 1.5rem;
+  border: 1px solid black;
+}
+
+.RoomsCard :hover {
+  color: black;
+  background-color: #9e9e9e;
+  transition: all 0.9s ease-in-out;
+}
+
+.RoomsName {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

@@ -1,0 +1,30 @@
+.float-right {
+  margin-left: 84%;
+  width: 10rem;
+  height: 3rem;
+  border: 1px solid black;
+  display: flex;
+}
+.float-left {
+  margin-right: 84%;
+  width: 10rem;
+  height: 3rem;
+  border: 1px solid black;
+  display: flex;
+}
+
+img {
+  height: 2.5rem;
+  border-radius: 30px;
+}
+
+.Message {
+  border: 1px solid black;
+  width: 7.5rem;
+  text-align: center;
+  padding-top: 7px;
+  border-radius: 5px;
+}
+.Avatar {
+  padding-top: 2px;
+}
