@@ -7,6 +7,11 @@ import SignUp from './SignUp';
 import MessageApp from './MessageApp';
 import Login from './Login';
 
+import socketClient from "socket.io-client";
+const SERVER = 'localhost:8080';
+//create socket io connection
+//then retrieve the MessagesView
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -39,6 +44,20 @@ export default class App extends Component {
     }).catch((error) => {
       // An error happened.
     });
+  }
+
+  componentDidMount() {
+    this.configureSocket();
+  }
+
+  socket () { return }
+
+  configureSocket() {
+    let socket = socketClient(SERVER);
+    socket.on('connection', msg => {
+      console.log(msg);
+    });
+    this.socket = socket;
   }
 
   render() {
