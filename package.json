@@ -3,22 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-react": "^7.12.13",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
+    "babel": "^6.23.0",
+    "babel-loader": "^8.2.2",
     "bootstrap": "^4.6.0",
     "firebase": "^8.2.7",
+    "nodemon": "^2.0.7",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.2"
+    "react-scripts": "4.0.2",
+    "socket.io": "^3.1.1",
+    "socket.io-client": "^3.1.1",
+    "webpack": "^5.22.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "nodemon server/index.js",
+    "builder": "webpack --watch"
   },
   "browserslist": {
     "production": [
@@ -31,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.5.0"
   }
 }
