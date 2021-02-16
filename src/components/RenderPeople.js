@@ -5,10 +5,12 @@ import '../css/RenderPeople.css';
 
 const RenderPeople = () => {
   return (
+<>
     <div className="PeopleBox">
       <div className="Avatar"><img src="https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg"></img></div>
-      <div className="Name">Hello</div>
+      <div className="Name">Enter a Name Here</div>
     </div>
+</>
   )
 };
 

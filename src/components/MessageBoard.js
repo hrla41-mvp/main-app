@@ -12,22 +12,20 @@ class MessageBoard extends React.Component {
   }
   render() {
     return (
-      <div className="MessageBoard">
-        <Container className="RoomNameHolder" fluid>
-          <Row>
-            <Col className="RoomName">Room Here</Col> {/* Can pass props and add room name here to dynamically render the room name */}
-          </Row>
-        </Container>
-        <Container fluid>
-          <Row>
-            <Col className="MessagesView"><RenderMessages /></Col>
-          </Row>
-        </Container>
-        <Container>
-          <input type="text" placeholder="What's on your Mind?"  className="sendMessageForm" important></input>
-        </Container>
+      <div className="MessageBoardContainer">
+        <div>
+          <h1 className="roomName">Room Name Here</h1>
+        </div>
+        <div>
+          <RenderMessages />
+        </div>
+        <div>
+          <input className="newMessageInput" type="text" placeholder="Whats on your mind?" ></input>
+        </div>
       </div>
     )
   }
 }
 export default MessageBoard;
+
+

@@ -7,16 +7,118 @@ import '../css/RenderRooms.css';
 const RenderRooms = () => {
   return (
     <>
-      <Container fluid className="RoomsCard" >
-        <Row>
-          <Col className="RoomsName">Room Name Here</Col>
-        </Row>
-      </Container>
-      <Container fluid className="RoomsCard" >
-        <Row>
-          <Col className="RoomsName">Room Name Here</Col>
-        </Row>
-      </Container>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+
+
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
+      <div className="RoomsCard" >
+        <div>
+          <div className="RoomsName">Room Name Here</div>
+        </div>
+      </div>
     </>
   )
 };

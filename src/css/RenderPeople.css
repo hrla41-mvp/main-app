@@ -1,8 +1,8 @@
 .PeopleBox {
   width: 14rem;
   height: 3rem;
-  border: 1px solid black;
   display: flex;
+  margin-top: 1rem;
 }
 
 img {
@@ -11,12 +11,21 @@ img {
 }
 
 .Name {
-  border: 1px solid black;
-  width: 7.5rem;
+  width: 30rem;
   text-align: center;
   padding-top: 7px;
   border-radius: 5px;
+  background-color: rgb(27, 27, 27);
+  color: white;
 }
 .Avatar {
   padding-top: 2px;
+}
+
+.PeopleBox :hover {
+  color: rgb(0, 0, 0);
+  background-color: #2e2e2e;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  transform: translateY(-5px);
 }

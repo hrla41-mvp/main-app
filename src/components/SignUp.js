@@ -9,14 +9,17 @@ export default function SignUp() {
   const [password2, setPassword2] = useState('');
 
   function handleFormInput(e) {
-    if (e.target.name === email) {
+    console.log(e.target.name)
+    if (e.target.name === 'email') {
       setEmail(e.target.value);
-    } else if (e.target.name === password1) {
+    } else if (e.target.name === 'password1') {
       setPassword1(e.target.value);
     } else {
       setPassword2(e.target.value);
     }
-    console.log(email, password1, password2);
+    console.log('Email: ', email);
+    console.log('Password1: ', password1);
+    console.log('password2: ', password2);
   }
 
   function handleFormSubmit(e) {
@@ -41,6 +44,9 @@ export default function SignUp() {
   return (
     <Container className="signUpForm mt-5">
         <Form onSubmit={handleFormSubmit}>
+          {(password1 !== password2) ? <Alert variant={'danger'}>
+            Passwords do not match!
+          </Alert> : null }
           <Form.Group controlId="formBasicEmail" onChange={handleFormInput}>
             <Form.Label>Email address</Form.Label>
             <Form.Control required type="email" name="email" placeholder="Enter email" />
@@ -56,7 +62,7 @@ export default function SignUp() {
             <Form.Label>Password Confirmation</Form.Label>
             <Form.Control required type="password" name="password2" placeholder="Password" />
           </Form.Group>
-          <div className="text-primary">Already have an account?</div>
+          <a className="text-primary d-block" href="/Login">Already have an account? Log In</a>
           <Button className="mt-3" variant="primary" type="submit">
             Submit
           </Button>

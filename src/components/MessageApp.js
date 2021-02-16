@@ -18,9 +18,9 @@ export default class MessageApp extends Component {
     return (
       <Container fluid className="messageAppContainer">
         <Row className="messageAppRow">
-          <Col className="messageAppCol" style={{backgroundColor: '#283957'}}> <Chatroom /> </Col>
-          <Col className="messageAppCol"  style={{backgroundColor: '#87010f', borderLeft: '1px solid #00ff72'}}xs={6}> <MessageBoard /> </Col>
-          <Col className="messageAppCol" style={{backgroundColor: '#548c5d'}}> <FriendsList /> </Col>
+          <Col className="messageAppCol" > <Chatroom /> </Col>
+          <Col className="messageAppCol" xs={6}> <MessageBoard /> </Col>
+          <Col className="messageAppCol" > <FriendsList /> </Col>
         </Row>
       </Container>
     )
