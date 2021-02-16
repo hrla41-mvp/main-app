@@ -7,11 +7,29 @@ const path = require('path');
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.get('/*', function (req, res) {
+app.get(/\/(SignUp|MessageApp|Login)/, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public/index.html'), function (err) {
     if (err) res.status(500).send(err);
   })
 })
+
+app.get('/userInfo/:user_id', (req, res)=> {
+  try {
+    const product = await pool.query(`SELECT * FROM Users WHERE user_id = ${req.params.user_id}`);
+    res.json(product.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+});
+
+app.get('/cohort', async (req, res) => {
+  try {
+    const product = await pool.query(`SELECT * FROM Rooms LIMIT 10`);
+    res.json(product.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+});
 
 io.on('connection', (socket) => {
   console.log('user connected');
