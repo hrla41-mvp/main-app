@@ -1,11 +1,8 @@
-.messageAppContainer {
-  height: 100vh;
-}
-
-.messageAppRow {
-  height:100%;
-}
-
 .messageAppCol {
   border: 1px solid black;
+  height: 93vh;
+  background-color: rgb(33 33 33);
+  border-right: 1px solid #737373;
+  border-left: 1px solid #737373;
+  padding: 0px !important;
 }

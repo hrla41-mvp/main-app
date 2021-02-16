@@ -20,7 +20,7 @@ class FriendsList extends React.Component {
         </Container>
         <Container fluid>
           <Row>
-            <Col className="PeopleInRoom">People <RenderPeople /></Col>
+            <Col className="PeopleInRoom">People In The Room <RenderPeople /></Col>
           </Row>
             <input type="text" placeholder="Type a username" className="EnterUsername"></input>
         </Container>

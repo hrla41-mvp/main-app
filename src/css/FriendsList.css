@@ -2,12 +2,11 @@
   /* border: 5px solid black; */
   color: white;
   margin-top: 13px;
-  height: 100vh;
+  /* height: 96vh; */
 }
 
 .RoomNameCard {
   padding-top: 8px;
-  border: 1px solid black;
   height: 6vh;
   text-align: center;
   border-radius: 5px;
@@ -15,17 +14,18 @@
 }
 
 .PeopleInRoom {
-  border: 1px solid black;
-  height: 20vh;
+  height: auto;
   text-align: left;
   border-radius: 5px;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.9rem;
 }
 
 .EnterUsername {
   width: 100%;
   border-radius: 4px;
-  border: 1px solid black;
+  border: 0px;
   outline: none;
   height: 30px;
+  background-color: rgb(27, 27, 27);
+  color: white;
 }

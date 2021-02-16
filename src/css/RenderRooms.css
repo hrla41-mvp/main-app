@@ -4,13 +4,16 @@
   text-align: center;
   align-items: center;
   font-size: 1.5rem;
-  border: 1px solid black;
+  /* border: 1px solid black;
+  border-radius: 50px; */
 }
 
 .RoomsCard :hover {
-  color: black;
-  background-color: #9e9e9e;
-  transition: all 0.9s ease-in-out;
+  color: rgb(0, 0, 0);
+  background-color: #2e2e2e;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  transform: translateY(-5px);
 }
 
 .RoomsName {
