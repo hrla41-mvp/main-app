@@ -7,6 +7,7 @@ import SignUp from './SignUp';
 import MessageApp from './MessageApp';
 import Login from './Login';
 
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -17,6 +18,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         // User is signed in, see docs for a list of available properties

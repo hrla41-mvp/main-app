@@ -1,0 +1,20 @@
+[{
+  "room_id": "1234",
+  "room_name": "main",
+  "messages": [
+    {
+          "username": "Dubeayi",
+          "avatar": "https: //shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg",
+          "message": "hello",
+          "time": "Jan 15",
+          "users": ["3456","1234", "1235", "12345"]
+    },
+    {
+          "username": "Vini",
+          "avatar": "https: //shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg",
+          "message": "what's  up",
+          "time": "Jan 15"
+    }
+  ],
+  "users": "1234"
+}]
