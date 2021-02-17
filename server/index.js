@@ -163,10 +163,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', ()=> {
     io.to(socket.room).emit('disconnection', socket.user)
     // find socket.user in client.userNames & update
-    for (var i = 0; i < io.eio.clients.userNames.length; i++){
-      let curPos = io.eio.clients.userNames[i];
-      if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-        io.eio.clients.userNames.splice(i, 1);
+    if (io.eio.clients.userNames!==undefined) {
+      for (var i = 0; i < io.eio.clients.userNames.length; i++){
+        let curPos = io.eio.clients.userNames[i];
+        if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
+          io.eio.clients.userNames.splice(i, 1);
+        }
       }
     }
   })
