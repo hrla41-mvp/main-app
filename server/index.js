@@ -7,27 +7,26 @@ const path = require('path');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const pool = require('../DB/index.js');
-
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-
 app.use(express.static(path.join(__dirname, '..', 'public')));
+const axios = require('axios');
 
-
-app.post('/slackreactor/room', async (req, res) => {
+//ADDS A ROOM TO DATABASE
+app.post('/slackreactor/rooms', async (req, res) => {
   try {
     const { room_name, users } = req.body;
-    const user_id = req.body.message.user_id;
-    const first_name = req.body.message.first_name
-    const profile_pic = req.body.message.profile_pic
-    const post = req.body.message.message
+    const user_id = req.body.messages[0].user_id;
+    const first_name = req.body.messages[0].first_name;
+    const last_name = req.body.messages[0].last_name;
+    const profile_pic = req.body.messages[0].profile_pic;
+    const post = req.body.messages[0].message;
 
-    const text = `{user_id: ${user_id}, first_name: ${first_name}, profile_pic: ${profile_pic}, message: ${post}}`
+    //this puts the object into an ingestible Postgres form
+    const text = `{user_id: ${user_id}, first_name: ${first_name}, last_name: ${last_name}, profile_pic: ${profile_pic}, message: ${post}}`
     const stringified = JSON.stringify(text)
-    console.log('text ', text)
 
     const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${room_name}', '{${stringified}}', '{${users}}');`
-
     const newMessage = await pool.query(query);
     res.json(query.rows)
   } catch (err) {
@@ -35,10 +34,43 @@ app.post('/slackreactor/room', async (req, res) => {
   }
 });
 
-//FRIENDS -NEED TO ADD ANOTHER FRIEND
-//ROOMS - ADD ANOTHER ROOM
-//UPDATING A ROOM NAME -LOW
+//UPDATES MESSAGES IN A ROOM
+app.put('/slackreactor/rooms/messages:id', async (req, res) => {
+  const newMessage = req.params.id
+  try {
+    const { room_name, users } = req.body;
+    const user_id = req.body.user_id;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const profile_pic = req.body.profile_pic;
+    const post = req.body.message;
 
+    //this puts the object into an ingestible Postgres form
+    const text = `{user_id: ${user_id}, first_name: ${first_name}, last_name: ${last_name}, profile_pic: ${profile_pic}, message: ${post}}`
+
+    const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_id = '${newMessage}';`
+
+    const newPost = await pool.query(query);
+    res.json(query.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+});
+
+//UPDATES A ROOM'S USERS
+app.put('/slackreactor/rooms/users:id', async (req, res) => {
+  const roomToBeUpdated = req.params.id
+    try {
+
+      const query = `UPDATE Rooms SET users = array_append(users, '${req.body}' WHERE user_id = '${itemToBeUpdated}'`
+      const dbQuery = await pool.query(query);
+      res.json(query.rows)
+    } catch (err) {
+      console.error(err.message)
+    }
+});
+
+//ADDS NEW USER
 app.post('/slackreactor/users', async (req, res) => {
   console.log(req.body)
   try {
@@ -61,9 +93,10 @@ app.post('/slackreactor/users', async (req, res) => {
   }
 });
 
+//UPDATES A USER'S DETAILS
 app.put('/slackreactor/users/:id', async (req, res) => {
   const itemToBeUpdated = req.params.id
-
+  //if updating a user's rooms:
   if (req.body.rooms) {
     try {
       const body = JSON.stringify(req.body.rooms)
@@ -76,6 +109,7 @@ app.put('/slackreactor/users/:id', async (req, res) => {
       console.error(err.message)
     }
   }
+  //if updating a user's friends:
   if (req.body.friends) {
     try {
       const body = JSON.stringify(req.body.friends)
@@ -88,7 +122,7 @@ app.put('/slackreactor/users/:id', async (req, res) => {
       console.error(err.message)
     }
   }
-
+  //for all other user detail updates:
   try {
     const column = Object.keys(req.body)
     console.log(req.body[column])
@@ -102,7 +136,8 @@ app.put('/slackreactor/users/:id', async (req, res) => {
   }
 });
 
-app.get('/slackreactor/room', async (req, res) => {
+//RETRIEVES ALL ROOMS
+app.get('/slackreactor/rooms', async (req, res) => {
   try {
     const product = await pool.query(`SELECT * FROM Rooms LIMIT 10`);
     res.json(product.rows)
@@ -111,6 +146,7 @@ app.get('/slackreactor/room', async (req, res) => {
   }
 });
 
+//RETRIEVES ALL USERS
 app.get('/slackreactor/users', async (req, res) => {
   try {
     const product = await pool.query(`SELECT * FROM Users LIMIT 10`);
@@ -126,6 +162,7 @@ app.get(/\/(SignUp|MessageApp|Login)/, (req, res) => {
   })
 })
 
+//RETRIEVES A SPECIFIC USER
 app.get('/userInfo/:user_id', async (req, res) => {
   try {
     const product = await pool.query(`SELECT * FROM Users WHERE user_id = ${req.params.user_id}`);
@@ -134,7 +171,6 @@ app.get('/userInfo/:user_id', async (req, res) => {
     console.error(err.message)
   }
 });
-
 
 io.on('connection', (socket) => {
 
@@ -151,8 +187,16 @@ io.on('connection', (socket) => {
     io.to(room).emit('userWelcome', { newUser: socket.user, connectedUsersList: io.eio.clients.userNames});
   });
 
+  //FUNCTION HELPERS
+  //This function adds messages from a room into a database
+  const addMessageToRoom = (room, message) => {
+    axios.put(`http://localhost:3000/slackreactor/rooms/${room}`, message)
+      .catch(err => {console.log(err)})
+  }
+
   socket.on('message', ({ room, message })=> {
     io.to(room).emit('message', message);
+    addMessageToRoom(room, message)
   });
 
   socket.on('gotKicked', ()=> {

@@ -30,7 +30,7 @@ export default class MessageApp extends Component {
       id: '',
       status: 'online',
       users: '',
-      room: 'testRoom',
+      room: 6,
       message: '',
       friendsList: '',
       roomUsers: [
@@ -75,6 +75,7 @@ export default class MessageApp extends Component {
     let user = this.state.user;
     let messages = this.state.messages
     this.setState.bind(this);
+    //this lexical-scoped function is used to set the state of messages to include the new message
     let setter = (messageCopy) => {
       this.setState({ messages: messageCopy })
     }

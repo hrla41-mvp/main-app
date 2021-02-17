@@ -4,10 +4,10 @@ CREATE TABLE Users(
   first_name VARCHAR(40) UNIQUE NOT NULL,
   last_name VARCHAR(40) NOT NULL,
   cohort VARCHAR(100) NOT NULL,
-  staff VARCHAR(10),
+  staff BOOLEAN,
   friends TEXT[],
-  profile_pic VARCHAR(100) NOT NULL UNIQUE,
-  last_login TIMESTAMP,
+  profile_pic VARCHAR(100) NOT NULL,
+  last_login VARCHAR(100),
   rooms TEXT[]
 --  FOREIGN KEY (cohort)
 --       REFERENCES Cohort(cohort_name),
