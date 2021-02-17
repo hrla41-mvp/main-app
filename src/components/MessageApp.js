@@ -44,7 +44,11 @@ export default class MessageApp extends Component {
           status: 'offline',
           id: '2'
         }
-      ]
+      ],
+      user_id: 'ABCDEFGHIJ',
+      first_name: 'Vini',
+      profile_pic: 'http://www.google.com/',
+      post: 'Hello, this is me'
     }
     this.handleInput = this.handleInput.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
