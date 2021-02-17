@@ -2,7 +2,8 @@
   /* border: 5px solid black; */
   color: white;
   margin-top: 13px;
-  /* height: 96vh; */
+  height: 95%;
+  overflow: auto;
 }
 
 .RoomNameCard {

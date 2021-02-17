@@ -9,8 +9,6 @@ CREATE TABLE Users(
   profile_pic VARCHAR(100) NOT NULL,
   last_login VARCHAR(100),
   rooms TEXT[]
---  FOREIGN KEY (cohort)
---       REFERENCES Cohort(cohort_name),
 );
 -- DROP TYPE IF EXISTS Messages;
 -- CREATE TYPE Messages AS(

@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 const axios = require('axios');
 
 //ADDS A ROOM TO DATABASE
+
 app.post('/slackreactor/rooms', async (req, res) => {
   try {
     const { room_name, users } = req.body;
@@ -83,8 +84,9 @@ app.post('/slackreactor/users', async (req, res) => {
     const last_name = req.body.last_name;
     const profile_pic = req.body.profile_pic;
     const rooms = req.body.rooms;
+    const last_login = req.body.last_login;
 
-    const query = `INSERT INTO Users (user_id, cohort, friends, staff, first_name, last_name, profile_pic, rooms) VALUES('${user_id}', '${cohort}', '{${friends}}', '${staff}', '${first_name}', '${last_name}', '${profile_pic}', '{${rooms}}');`
+    const query = `INSERT INTO Users (user_id, cohort, friends, staff, first_name, last_name, profile_pic, last_login, rooms) VALUES('${user_id}', '${cohort}', '{${friends}}', '${staff}', '${first_name}', '${last_name}', '${profile_pic}','${last_login}', '{${rooms}}');`
 
     const newMessage = await pool.query(query);
     res.json(query.rows)
@@ -204,18 +206,18 @@ io.on('connection', (socket) => {
     //broadcast the message to room
   })
 
-  socket.on('disconnect', ()=> {
-    io.to(socket.room).emit('disconnection', socket.user)
-    // find socket.user in client.userNames & update
-    if (io.eio.clients.userNames!==undefined) {
-      for (var i = 0; i < io.eio.clients.userNames.length; i++){
-        let curPos = io.eio.clients.userNames[i];
-        if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-          io.eio.clients.userNames.splice(i, 1);
-        }
+socket.on('disconnect', ()=> {
+  io.to(socket.room).emit('disconnection', socket.user)
+  // find socket.user in client.userNames & update
+  if (io.eio.clients.userNames!==undefined) {
+    for (var i = 0; i < io.eio.clients.userNames.length; i++){
+      let curPos = io.eio.clients.userNames[i];
+      if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
+        io.eio.clients.userNames.splice(i, 1);
       }
     }
-  })
+  }
+})
 });
 
 http.listen(port, () => {

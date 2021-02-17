@@ -1,6 +1,4 @@
 node_modules/
 package-lock.json
-.DS_Store
-src/Firebase
-src/components/socketioDraft.js
+Firebase.js
 bundle.js
