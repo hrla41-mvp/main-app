@@ -1,19 +1,40 @@
 import React from 'react';
+import Axios from 'axios';
 import '../css/Chatroom.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import RenderRooms from './RenderRooms'
+
 class Chatroom extends React.Component {
   constructor() {
     super()
     this.state = {
-
+      allRooms: ["Default Room"]
     }
+    this.getRooms = this.getRooms.bind(this);
+  }
+  componentDidMount() {
+    this.getRooms();
+  }
+  getRooms() {
+    let newArray = [];
+    Axios.get('/slackreactor/rooms')
+      .then( (response) => {
+        response.data.map(item => (
+          newArray.push(item.room_name)
+        ))
+        this.setState({
+          allRooms: newArray,
+        })
+      })
+      .catch( (err) => {
+        console.err(err)
+      })
   }
   render() {
     return (
       <div className="MainChatRoomContainer">
         <div className="chatRoomsList">
-          <RenderRooms />
+          <RenderRooms rooms={this.state.allRooms} />
         </div>
         <div>
           <input className="newRoomInput" type="text" placeholder="Add A New Room"></input>
