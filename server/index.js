@@ -13,7 +13,7 @@ app.get(/\/(SignUp|MessageApp|Login)/, (req, res) => {
   })
 })
 
-app.get('/userInfo/:user_id', (req, res)=> {
+app.get('/userInfo/:user_id', async (req, res)=> {
   try {
     const product = await pool.query(`SELECT * FROM Users WHERE user_id = ${req.params.user_id}`);
     res.json(product.rows)
@@ -33,18 +33,37 @@ app.get('/cohort', async (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('user connected');
-  socket.on('messaging', msg => {
-    //look at which room this belongs to
-    //push msg into db
-    io.emit('messaging', msg);
+
+  socket.on('room', (room)=> {
+    console.log('user joined room');
+    socket.join(room);
   });
-  socket.on('disconnect', () => {
+
+  socket.on('add_user', user=> {
+    socket.emit('server_message', {
+      name: user.name,
+      message:'welcome to the server!'
+    })
+
+    socket.broadcast.emit('server_message', {
+      name:'server',
+      message:`${user.name} joined the chat`
+    })
+
+    socket.user = user;
+  })
+
+  socket.on('message', ({ room, message })=> {
+    console.log(room);
+    console.log(message);
+    io.to(room).emit('message', message);
+  });
+
+  socket.on('disconnect', ()=> {
     console.log('user disconnected');
   })
 });
-//setup the username
-//setup the room
-//setup the database
+
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
