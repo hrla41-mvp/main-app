@@ -160,7 +160,6 @@ io.on('connection', (socket) => {
     //broadcast the message to room
   })
 
-<<<<<<< HEAD
 socket.on('disconnect', ()=> {
   io.to(socket.room).emit('disconnection', socket.user)
   // find socket.user in client.userNames & update
@@ -173,9 +172,6 @@ socket.on('disconnect', ()=> {
     }
   }
 })
-=======
-
->>>>>>> 0d60bd7077fe56aa3838d439c0e3f327c7f06ebc
 });
 
 http.listen(port, () => {
