@@ -11,6 +11,7 @@ class Chatroom extends React.Component {
       allRooms: ["Default Room"]
     }
     this.getRooms = this.getRooms.bind(this);
+    this.addRoom = this.addRoom.bind(this);
   }
   componentDidMount() {
     this.getRooms();
@@ -30,6 +31,13 @@ class Chatroom extends React.Component {
         console.err(err)
       })
   }
+  addRoom(e) {
+    if (e.key === 'Enter') {
+      let typedValue = document.getElementById('typedValue').value;
+      console.log(typedValue);
+      // Axios.post()
+    }
+  }
   render() {
     return (
       <div className="MainChatRoomContainer">
@@ -37,7 +45,7 @@ class Chatroom extends React.Component {
           <RenderRooms rooms={this.state.allRooms} />
         </div>
         <div>
-          <input className="newRoomInput" type="text" placeholder="Add A New Room"></input>
+          <input className="newRoomInput" id="typedValue" type="text" placeholder="Add A New Room" onKeyPress={this.addRoom}></input>
         </div>
       </div>
     )
