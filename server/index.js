@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
-app.post('/slackreactor/room', async (req, res) => {
+app.post('/slackreactor/rooms', async (req, res) => {
   try {
     const { room_name, users } = req.body;
     const user_id = req.body.message.user_id;
@@ -102,7 +102,7 @@ app.put('/slackreactor/users/:id', async (req, res) => {
   }
 });
 
-app.get('/slackreactor/room', async (req, res) => {
+app.get('/slackreactor/rooms', async (req, res) => {
   try {
     const product = await pool.query(`SELECT * FROM Rooms LIMIT 10`);
     res.json(product.rows)
@@ -160,16 +160,16 @@ io.on('connection', (socket) => {
     //broadcast the message to room
   })
 
-  socket.on('disconnect', ()=> {
-    io.to(socket.room).emit('disconnection', socket.user)
-    // find socket.user in client.userNames & update
-    for (var i = 0; i < io.eio.clients.userNames.length; i++){
-      let curPos = io.eio.clients.userNames[i];
-      if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-        io.eio.clients.userNames.splice(i, 1);
-      }
-    }
-  })
+  // socket.on('disconnect', ()=> {
+  //   io.to(socket.room).emit('disconnection', socket.user)
+  //   // find socket.user in client.userNames & update
+  //   for (var i = 0; i < io.eio.clients.userNames.length; i++){
+  //     let curPos = io.eio.clients.userNames[i];
+  //     if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
+  //       io.eio.clients.userNames.splice(i, 1);
+  //     }
+  //   }
+  // })
 });
 
 http.listen(port, () => {
