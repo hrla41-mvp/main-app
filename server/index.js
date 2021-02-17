@@ -51,8 +51,9 @@ app.post('/slackreactor/users', async (req, res) => {
     const last_name = req.body.last_name;
     const profile_pic = req.body.profile_pic;
     const rooms = req.body.rooms;
+    const last_login = req.body.last_login;
 
-    const query = `INSERT INTO Users (user_id, cohort, friends, staff, first_name, last_name, profile_pic, rooms) VALUES('${user_id}', '${cohort}', '{${friends}}', '${staff}', '${first_name}', '${last_name}', '${profile_pic}', '{${rooms}}');`
+    const query = `INSERT INTO Users (user_id, cohort, friends, staff, first_name, last_name, profile_pic, last_login, rooms) VALUES('${user_id}', '${cohort}', '{${friends}}', '${staff}', '${first_name}', '${last_name}', '${profile_pic}','${last_login}', '{${rooms}}');`
 
     const newMessage = await pool.query(query);
     res.json(query.rows)
