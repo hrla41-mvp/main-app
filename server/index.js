@@ -160,16 +160,22 @@ io.on('connection', (socket) => {
     //broadcast the message to room
   })
 
-  // socket.on('disconnect', ()=> {
-  //   io.to(socket.room).emit('disconnection', socket.user)
-  //   // find socket.user in client.userNames & update
-  //   for (var i = 0; i < io.eio.clients.userNames.length; i++){
-  //     let curPos = io.eio.clients.userNames[i];
-  //     if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-  //       io.eio.clients.userNames.splice(i, 1);
-  //     }
-  //   }
-  // })
+<<<<<<< HEAD
+socket.on('disconnect', ()=> {
+  io.to(socket.room).emit('disconnection', socket.user)
+  // find socket.user in client.userNames & update
+  if (io.eio.clients.userNames!==undefined) {
+    for (var i = 0; i < io.eio.clients.userNames.length; i++){
+      let curPos = io.eio.clients.userNames[i];
+      if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
+        io.eio.clients.userNames.splice(i, 1);
+      }
+    }
+  }
+})
+=======
+
+>>>>>>> 0d60bd7077fe56aa3838d439c0e3f327c7f06ebc
 });
 
 http.listen(port, () => {
