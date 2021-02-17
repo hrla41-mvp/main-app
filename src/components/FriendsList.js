@@ -11,6 +11,9 @@ class FriendsList extends React.Component {
     }
   }
   render () {
+    var messageBody = document.getElementById('.messageBoardContainer');
+    // messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+    console.log(messageBody)
     return(
       <>
       <div className="FriendsList">
