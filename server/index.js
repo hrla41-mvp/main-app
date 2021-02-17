@@ -36,14 +36,14 @@ io.on('connection', (socket) => {
   socket.on('room', ({room, user})=> {
     socket.join(room);
     // update database from here
-    socket.user = user;
+    // update the id to match the user id in database
+    socket.user = {user:user, id:socket.client.conn.id, status: 'online'};
     socket.room = room;
     io.eio.clients.userNames === undefined ?
-      io.eio.clients.userNames=[user] :
-      io.eio.clients.userNames.push(user);
-    console.log(io.eio.clients.userNames);
+      io.eio.clients.userNames=[socket.user] :
+      io.eio.clients.userNames.push(socket.user);
 
-    io.to(room).emit('userWelcome', user.eio)
+    io.to(room).emit('userWelcome', { newUser: socket.user, connectedUsersList: io.eio.clients.userNames});
   });
 
   socket.on('message', ({ room, message })=> {
@@ -57,6 +57,13 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', ()=> {
     io.to(socket.room).emit('disconnection', socket.user)
+    // find socket.user in client.userNames & update
+    for (var i = 0; i < io.eio.clients.userNames.length; i++){
+      let curPos = io.eio.clients.userNames[i];
+      if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
+        io.eio.clients.userNames.splice(i, 1);
+      }
+    }
   })
 });
 

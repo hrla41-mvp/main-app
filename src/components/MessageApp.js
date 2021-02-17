@@ -27,16 +27,22 @@ export default class MessageApp extends Component {
         time: 'Jan 15'
       }],
       user: 'dubz',
+      id: '',
+      status: 'online',
       users: '',
       room: 'testRoom',
       message: '',
       friendsList: '',
       roomUsers: [
         {
-          name: 'Greg'
+          user: 'Greg',
+          status: 'offline',
+          id: '1'
         },
         {
-          name: 'Dubeayi'
+          user: 'Dubeayi',
+          status: 'offline',
+          id: '2'
         }
       ]
     }
@@ -82,13 +88,37 @@ export default class MessageApp extends Component {
         setter(messageCopy);
       });
 
-      socket.on('userWelcome', (user)=> {
+      socket.on('userWelcome', ({ newUser, connectedUsersList})=> {
         console.log('user joined the room');
-        //add user to connected users list
+        let update = [...this.state.roomUsers];
+        update.push(newUser)
+        for (var j=0; j<connectedUsersList.length; j++) {
+          let isInList = false;
+          for (var i=0; i < update.length; i++) {
+            let updateUser = update[i];
+            let conUser = connectedUsersList[j]
+            /* this extra check is meant to avoid any conflicts with duplicate usernames*/
+            if (updateUser.user===conUser.user && updateUser.id === conUser.id) {
+              if (update[i].status===undefined) update[i]['status']='';
+              update[i].status = 'online';
+              isInList = true;
+            }
+          }
+          if (!isInList) update.push(connectedUsersList[j]);
+        }
+        this.setState({roomUsers: update});
       });
+
       socket.on('disconnection', (user)=> {
         console.log('user left the room');
-        //remove user from connected users list
+        // find user with matching id, update status
+        let update = [...this.state.roomUsers];
+        for (var i = 0; i < update.length; i++) {
+          if (update[i].user === user.user && update[i].id === user.id) {
+            update.splice(i, 1);
+          }
+        }
+        this.setState({ roomUsers: update });
       })
 
     });
