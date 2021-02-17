@@ -15,12 +15,15 @@ class FriendsList extends React.Component {
       <div className="FriendsList">
         <Container fluid>
           <Row>
-            <Col className="RoomNameCard">Room Name</Col>
+            <Col className="RoomNameCard">{this.props.room}</Col>
           </Row>
         </Container>
         <Container fluid>
           <Row>
-            <Col className="PeopleInRoom">People In The Room <RenderPeople /></Col>
+            <Col className="PeopleInRoom">People In The Room <RenderPeople
+            userName={this.props.user}
+            roomUsers={this.props.roomUsers}
+            /></Col>
           </Row>
             <input type="text" placeholder="Type a username" className="EnterUsername"></input>
         </Container>

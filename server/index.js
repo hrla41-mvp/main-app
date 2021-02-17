@@ -32,38 +32,33 @@ app.get('/cohort', async (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('user connected');
 
-  socket.on('room', (room)=> {
-    console.log('user joined room');
+  socket.on('room', ({room, user})=> {
     socket.join(room);
+    // update database from here
+    socket.user = user;
+    socket.room = room;
+    io.eio.clients.userNames === undefined ?
+      io.eio.clients.userNames=[user] :
+      io.eio.clients.userNames.push(user);
+    console.log(io.eio.clients.userNames);
+
+    io.to(room).emit('userWelcome', user.eio)
   });
 
-  socket.on('add_user', user=> {
-    socket.emit('server_message', {
-      name: user.name,
-      message:'welcome to the server!'
-    })
-
-    socket.broadcast.emit('server_message', {
-      name:'server',
-      message:`${user.name} joined the chat`
-    })
-
-    socket.user = user;
-  })
-
   socket.on('message', ({ room, message })=> {
-    console.log(room);
-    console.log(message);
     io.to(room).emit('message', message);
   });
 
+  socket.on('gotKicked', ()=> {
+    //update the database
+    //broadcast the message to room
+  })
+
   socket.on('disconnect', ()=> {
-    console.log('user disconnected');
+    io.to(socket.room).emit('disconnection', socket.user)
   })
 });
-
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
