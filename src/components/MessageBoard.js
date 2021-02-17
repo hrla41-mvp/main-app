@@ -19,7 +19,7 @@ class MessageBoard extends React.Component {
         </div>
         <div>
           {this.props.messages.map(element => (
-            <RenderMessages messages={element} />
+            <RenderMessages messages={element} key={Math.random()}/>
           ))}
         </div>
         <div>

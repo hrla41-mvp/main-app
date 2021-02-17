@@ -6,14 +6,14 @@ import '../css/RenderPeople.css';
 const RenderPeople = ({userName, roomUsers}) => {
   return (
     <>
-      <div className="PeopleBox">
+      {/* <div className="PeopleBox">
         <div className="Avatar"><img src="https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg"></img></div>
         <div className="Name">{userName}</div>
-      </div>
+      </div> */}
         {roomUsers.map(element=> (
-          <div className="PeopleBox">
+          <div className="PeopleBox" key={element.id}>
             <div className="Avatar"><img src={element.img ||'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg'}></img></div>
-            <div className="Name">{element.name}</div>
+            <div className="Name">{element.user}</div>
           </div>
         ))}
 
