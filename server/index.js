@@ -73,7 +73,6 @@ app.put('/slackreactor/rooms/users:id', async (req, res) => {
 
 //ADDS NEW USER
 app.post('/slackreactor/users', async (req, res) => {
-  console.log(req.body)
   try {
     const { room_name, users } = req.body;
     const user_id = req.body.user_id;
@@ -127,9 +126,6 @@ app.put('/slackreactor/users/:id', async (req, res) => {
   //for all other user detail updates:
   try {
     const column = Object.keys(req.body)
-    console.log(req.body[column])
-    console.log(itemToBeUpdated)
-
     const query = `UPDATE Users SET ${column} = '${req.body[column]}' WHERE user_id = '${itemToBeUpdated}'`
     const dbQuery = await pool.query(query);
     res.json(query.rows)
@@ -174,51 +170,68 @@ app.get('/userInfo/:user_id', async (req, res) => {
   }
 });
 
+let roomRecords = {};
+
 io.on('connection', (socket) => {
 
-  socket.on('room', ({room, user})=> {
+  const formatToSend = (connectedUsersList) => {
+    var formattedUsers = [];
+    for (var key in connectedUsersList) {
+      var obj = {};
+      obj['user'] = connectedUsersList[key];
+      obj['status'] = 'online';
+      obj['id'] = key;
+      formattedUsers.push(obj);
+    }
+    return formattedUsers;
+  };
+
+  const joinRoom = (room, user) => {
     socket.join(room);
-    // update database from here
-    // update the id to match the user id in database
-    socket.user = {user:user, id:socket.client.conn.id, status: 'online'};
+
+    if (!roomRecords[room]) roomRecords[room] = {};
+    if (!roomRecords[room][socket.id]) roomRecords[room][socket.id] = user;
+    io.to(room).emit('userWelcome',
+      {
+        newUser: {
+          user: roomRecords[room][socket.id],
+          status: 'online',
+          id: socket.id
+        },
+        connectedUsersList: formatToSend(roomRecords[room])
+      });
+    console.log(roomRecords);
     socket.room = room;
-    io.eio.clients.userNames === undefined ?
-      io.eio.clients.userNames=[socket.user] :
-      io.eio.clients.userNames.push(socket.user);
-
-    io.to(room).emit('userWelcome', { newUser: socket.user, connectedUsersList: io.eio.clients.userNames});
-  });
-
-  //FUNCTION HELPERS
-  //This function adds messages from a room into a database
-  const addMessageToRoom = (room, message) => {
-    axios.put(`http://localhost:3000/slackreactor/rooms/${room}`, message)
-      .catch(err => {console.log(err)})
+    socket.nickname = user;
   }
 
-  socket.on('message', ({ room, message })=> {
-    io.to(room).emit('message', message);
-    addMessageToRoom(room, message)
+  const leaveRoom = (room) => {
+    delete roomRecords[socket.room][socket.id]
+    socket.leave(room);
+    io.to(room).emit('disconnection', { connectedUsersList: formatToSend(roomRecords[room]) });
+  }
+
+  socket.on('room', ({ room, user }) => {
+    console.log('user connected');
+    joinRoom(room, user);
   });
 
-  socket.on('gotKicked', ()=> {
-    //update the database
-    //broadcast the message to room
+  socket.on('message', ({ room, message }) => {
+    io.to(room).emit('message', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+    if (!!socket.room) leaveRoom(socket.room);
   })
 
-// socket.on('disconnect', ()=> {
-//   io.to(socket.room).emit('disconnection', socket.user)
-//   // find socket.user in client.userNames & update
-//   if (io.eio.clients.userNames!==undefined) {
-//     for (var i = 0; i < io.eio.clients.userNames.length; i++){
-//       let curPos = io.eio.clients.userNames[i];
-//       if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-//         io.eio.clients.userNames.splice(i, 1);
-//       }
-//     }
-//   }
-// })
+  socket.on('swapRoom', ({ oldRoom, newRoom }) => {
+    leaveRoom(oldRoom);
+    joinRoom(newRoom, socket.nickname);
+  });
+
 });
+
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);

@@ -1,54 +1,27 @@
 import React from 'react';
-import Axios from 'axios';
 import '../css/Chatroom.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import RenderRooms from './RenderRooms'
 
 class Chatroom extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      allRooms: ["Default Room"]
-    }
-    this.getRooms = this.getRooms.bind(this);
-    this.addRoom = this.addRoom.bind(this);
-  }
-  componentDidMount() {
-    this.getRooms();
-  }
-
-  getRooms() {
-    let newArray = [];
-    Axios.get('/slackreactor/rooms')
-      .then( (response) => {
-        response.data.map(item => (
-          newArray.push(item.room_name)
-        ))
-        this.setState({
-          allRooms: newArray,
-        })
-      })
-      .catch( (err) => {
-        console.err(err)
-      })
-  }
-  addRoom(e) {
-    if (e.key === 'Enter') {
-      let typedValue = document.getElementById('typedValue').value;
-      console.log(typedValue);
-      Axios.post('/slackreactor/rooms',{
-
-      })
     }
   }
+
+
   render() {
     return (
       <div className="MainChatRoomContainer">
         <div className="chatRoomsList">
-          <RenderRooms rooms={this.state.allRooms} />
+          <RenderRooms
+            chatRoomsList={this.props.chatRoomsList}
+            updateCurrentRoom={this.props.updateCurrentRoom}
+          />
         </div>
         <div>
-          <input className="newRoomInput" id="typedValue" type="text" placeholder="Add A New Room" onKeyPress={this.addRoom}></input>
+          <input className="newRoomInput" id="typedValue" type="text" placeholder="Add A New Room" onKeyPress={this.props.addRoom}></input>
         </div>
       </div>
     )
