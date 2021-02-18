@@ -14,9 +14,7 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentPage: 'SignUp',
-      user_id: '',
-      userObj: {}
+      userIsSignedIn: false
     }
     this.logOut = this.logOut.bind(this);
   }
@@ -26,29 +24,24 @@ export default class App extends Component {
       if (user) {
         var uid = user.uid;
         console.log(`${user.uid} has logged in`)
+        this.setState({
+          userIsSignedIn: true
+        })
 
-        // this.setState({
-        //   user_id: data
-        // })
+        if (window.location.href === 'http://localhost:3000/Login' ||
+        window.location.href === 'http://localhost:3000/SignUp'){
+          window.location.href = "/MessageApp";
+        }
 
-        Axios.get(`/slackreactor/user/${user.uid}`)
-          .then(({data}) => {
-            this.setState({
-              userObj: data,
-              user_id: user.uid
-            })
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-
-        // this.setState({
-        //   user_id: user.uid
-        // })
       } else {
         // User is signed out
-        // ...
         console.log(`logged out`)
+        this.setState({
+          userIsSignedIn: false
+        })
+        if (window.location.href === 'http://localhost:3000/MessageApp') {
+          window.location.href = "/";
+        }
       }
     });
   }
@@ -64,26 +57,42 @@ export default class App extends Component {
   }
 
   render() {
+    const isSignedIn = this.state.userIsSignedIn;
+    let dynamicHeader;
+
+    if (isSignedIn) {
+      dynamicHeader =
+      <Navbar bg="dark" variant="dark" className="header-Chat-App">
+        <Navbar.Brand href="/">Slack Reactor</Navbar.Brand>
+        <Nav className="mr-auto">
+          <Nav.Link href="/MessageApp">MessageApp</Nav.Link>
+        </Nav>
+        <Form inline>
+          <Button variant="light" onClick={this.logOut}>Log Out</Button>
+        </Form>
+      </Navbar>
+    } else {
+      dynamicHeader =
+      <Navbar bg="dark" variant="dark" className="header-Chat-App">
+        <Navbar.Brand href="/">Slack Reactor</Navbar.Brand>
+        <Nav className="mr-auto">
+          <Nav.Link href="/SignUp">Sign Up</Nav.Link>
+          <Nav.Link href="/Login">Log In</Nav.Link>
+        </Nav>
+      </Navbar>
+    }
+
+
     return (
       <div className="App">
         <Router>
           <Container className="Main-Container" fluid>
-            <Navbar bg="dark" variant="dark" className="header-Chat-App">
-              <Navbar.Brand href="#home">Slack Reactor</Navbar.Brand>
-              <Nav className="mr-auto">
-                <Nav.Link href="/SignUp">Sign Up</Nav.Link>
-                <Nav.Link href="/Login">Log In</Nav.Link>
-                <Nav.Link href="/MessageApp">MessageApp</Nav.Link>
-              </Nav>
-              <Form inline>
-                <Button variant="outline-info" onClick={this.logOut}>Log Out</Button>
-              </Form>
-            </Navbar>
+            {dynamicHeader}
             <Switch>
               <Route path="/" exact render={() => <SignUp />} />
               <Route path="/SignUp" exact render={() => <SignUp />} />
               <Route path="/Login" exact render={() => <Login />} />
-              <Route path="/MessageApp" exact render={() => <MessageApp userId={this.state.user_id} userObj={this.state.userObj}/>} />
+              <Route path="/MessageApp" exact render={() => <MessageApp />} />
             </Switch>
           </Container>
         </Router>
@@ -91,3 +100,22 @@ export default class App extends Component {
     )
   }
 }
+/*<Nav className="mr-auto">
+<Nav.Link href="/SignUp">Sign Up</Nav.Link>
+<Nav.Link href="/Login">Log In</Nav.Link>
+<Nav.Link href="/MessageApp">MessageApp</Nav.Link>
+</Nav>
+
+
+
+{/* { (this.state.userIsSignedIn) ?
+              <Nav className="mr-auto">
+                <Nav.Link href="/MessageApp">MessageApp</Nav.Link>
+              </Nav> :
+              <Nav className="mr-auto">
+                <Nav.Link href="/SignUp">Sign Up</Nav.Link>
+                <Nav.Link href="/Login">Log In</Nav.Link>
+              </Nav>} }
+*/
+
+
