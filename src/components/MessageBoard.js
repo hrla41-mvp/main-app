@@ -25,7 +25,6 @@ class MessageBoard extends React.Component {
         <div>
           <form>
             <input className="newMessageInput" type="text" placeholder="Whats on your mind?" onChange={this.props.handleInput}></input>
-            {/* <input type="submit" name="SubmitButton" onSubmit={this.handleSendMessage}></input> */}
             <button name="Submit" onClick={this.props.handleSendMessage}>Submit</button>
           </form>
         </div>
