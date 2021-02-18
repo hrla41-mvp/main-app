@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Axios from 'axios';
 import { Button, Form, Navbar, Nav, Container } from 'react-bootstrap';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import firebase from '../Firebase';
@@ -12,7 +13,9 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentPage: 'SignUp'
+      currentPage: 'SignUp',
+      user_id: '',
+      userObj: {}
     }
     this.logOut = this.logOut.bind(this);
   }
@@ -21,10 +24,27 @@ export default class App extends Component {
 
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
         var uid = user.uid;
         console.log(`${user.uid} has logged in`)
+
+        // this.setState({
+        //   user_id: data
+        // })
+
+        Axios.get(`/userInfo/${user.uid}`)
+          .then(({data}) => {
+            this.setState({
+              userObj: data,
+              user_id: user.uid
+            })
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+
+        // this.setState({
+        //   user_id: user.uid
+        // })
       } else {
         // User is signed out
         // ...
@@ -63,7 +83,7 @@ export default class App extends Component {
               <Route path="/" exact render={() => <SignUp />} />
               <Route path="/SignUp" exact render={() => <SignUp />} />
               <Route path="/Login" exact render={() => <Login />} />
-              <Route path="/MessageApp" exact render={() => <MessageApp />} />
+              <Route path="/MessageApp" exact render={() => <MessageApp userId={this.state.user_id} userObj={this.state.userObj}/>} />
             </Switch>
           </Container>
         </Router>

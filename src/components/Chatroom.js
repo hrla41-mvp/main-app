@@ -16,6 +16,7 @@ class Chatroom extends React.Component {
   componentDidMount() {
     this.getRooms();
   }
+
   getRooms() {
     let newArray = [];
     Axios.get('/slackreactor/rooms')
@@ -35,7 +36,9 @@ class Chatroom extends React.Component {
     if (e.key === 'Enter') {
       let typedValue = document.getElementById('typedValue').value;
       console.log(typedValue);
-      // Axios.post()
+      Axios.post('/slackreactor/rooms',{
+
+      })
     }
   }
   render() {

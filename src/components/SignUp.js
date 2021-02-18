@@ -67,7 +67,7 @@ export default function SignUp() {
           friends: [],
           profile_pic: 'nothing',
           last_login: '10:00am',
-          rooms: []
+          rooms: ['HEllO','ROOMID']
         })
 
         /*

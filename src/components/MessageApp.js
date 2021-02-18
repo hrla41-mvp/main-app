@@ -5,6 +5,7 @@ import Chatroom from './Chatroom';
 import MessageBoard from './MessageBoard';
 import FriendsList from './FriendsList';
 import io from "socket.io-client";
+import Axios from 'axios';
 
 const SERVER = 'localhost:3000';
 const socket = io(SERVER, {
@@ -15,41 +16,14 @@ export default class MessageApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      messages: [{
-        username: 'Dubeayi',
-        avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg',
-        message: 'hello',
-        time: 'Jan 15'
-      }, {
-        username: 'Vini',
-        avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg',
-        message: 'what\'s  up',
-        time: 'Jan 15'
-      }],
-      user: 'dubz',
-      id: '',
-      status: 'online',
-      users: '',
-      room: 6,
-      message: '',
-      friendsList: '',
-      roomUsers: [
-        {
-          user: 'Greg',
-          status: 'offline',
-          id: '1'
-        },
-        {
-          user: 'Dubeayi',
-          status: 'offline',
-          id: '2'
-        }
-      ],
-      user_id: 'ABCDEFGHIJ',
-      first_name: 'Vini',
-      profile_pic: 'http://www.google.com/',
-      post: 'Hello, this is me'
+      userId: this.props.userId,
+      userObj: this.props.userObj,
+      currentRoom: {},
+      messages: [],
+      roomsUsers: [],
+      room: 'name',
     }
+
     this.handleInput = this.handleInput.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
@@ -57,6 +31,7 @@ export default class MessageApp extends Component {
 
   componentDidMount() {
     this.configureSocket();
+    console.log('Message app has mounted')
   }
 
   handleInput(e) {
@@ -130,6 +105,7 @@ export default class MessageApp extends Component {
   }
 
   render() {
+    console.log('User: ',this.props.userObj)
     return (
       <Container fluid className="messageAppContainer">
         <Row className="messageAppRow">
@@ -142,7 +118,7 @@ export default class MessageApp extends Component {
           <Col className="messageAppCol" > <FriendsList
             room={this.state.room || 'default room'}
             user={this.state.user || 'Enter a Name Here'}
-            roomUsers={this.state.roomUsers}
+            roomUsers={this.state.roomsUsers}
           /> </Col>
         </Row>
       </Container>

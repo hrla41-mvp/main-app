@@ -35,7 +35,7 @@ app.post('/slackreactor/rooms', async (req, res) => {
   }
 });
 
-//UPDATES MESSAGES IN A ROOM
+//UPDATE MESSAGES IN A ROOM
 app.put('/slackreactor/rooms/messages:id', async (req, res) => {
   const newMessage = req.params.id
   try {
@@ -167,7 +167,7 @@ app.get(/\/(SignUp|MessageApp|Login)/, (req, res) => {
 //RETRIEVES A SPECIFIC USER
 app.get('/userInfo/:user_id', async (req, res) => {
   try {
-    const product = await pool.query(`SELECT * FROM Users WHERE user_id = ${req.params.user_id}`);
+    const product = await pool.query(`SELECT * FROM Users WHERE user_id = '${req.params.user_id}'`);
     res.json(product.rows)
   } catch (err) {
     console.error(err.message)
@@ -206,18 +206,18 @@ io.on('connection', (socket) => {
     //broadcast the message to room
   })
 
-socket.on('disconnect', ()=> {
-  io.to(socket.room).emit('disconnection', socket.user)
-  // find socket.user in client.userNames & update
-  if (io.eio.clients.userNames!==undefined) {
-    for (var i = 0; i < io.eio.clients.userNames.length; i++){
-      let curPos = io.eio.clients.userNames[i];
-      if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-        io.eio.clients.userNames.splice(i, 1);
-      }
-    }
-  }
-})
+// socket.on('disconnect', ()=> {
+//   io.to(socket.room).emit('disconnection', socket.user)
+//   // find socket.user in client.userNames & update
+//   if (io.eio.clients.userNames!==undefined) {
+//     for (var i = 0; i < io.eio.clients.userNames.length; i++){
+//       let curPos = io.eio.clients.userNames[i];
+//       if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
+//         io.eio.clients.userNames.splice(i, 1);
+//       }
+//     }
+//   }
+// })
 });
 
 http.listen(port, () => {

@@ -4,16 +4,20 @@ import { Button, Container, Row, Col } from 'react-bootstrap';
 import RenderPeople from './RenderPeople.js';
 
 class FriendsList extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
 
     }
   }
   render () {
-    var messageBody = document.getElementById('.messageBoardContainer');
-    // messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
-    console.log(messageBody)
+    var messageBody = document.getElementsByClassName('MessageBoardContainer');
+    if (messageBody[0] === undefined) {
+      console.log('Helli im undefined')
+    } else {
+        messageBody[0].scrollTop = messageBody[0].scrollHeight;
+        console.log(messageBody)
+      }
     return(
       <>
       <div className="FriendsList">
