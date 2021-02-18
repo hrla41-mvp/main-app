@@ -7,7 +7,7 @@ import '../css/App.css';
 import SignUp from './SignUp';
 import MessageApp from './MessageApp';
 import Login from './Login';
-
+import LandingPage from './LandingPage.js'
 
 
 export default class App extends Component {
@@ -80,7 +80,7 @@ export default class App extends Component {
               </Form>
             </Navbar>
             <Switch>
-              <Route path="/" exact render={() => <SignUp />} />
+              <Route path="/" exact render={() => <LandingPage />} />
               <Route path="/SignUp" exact render={() => <SignUp />} />
               <Route path="/Login" exact render={() => <Login />} />
               <Route path="/MessageApp" exact render={() => <MessageApp userId={this.state.user_id} userObj={this.state.userObj}/>} />
