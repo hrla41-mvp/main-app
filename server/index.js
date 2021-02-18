@@ -135,43 +135,77 @@ app.get('/userInfo/:user_id', async (req, res) => {
   }
 });
 
+let roomRecords = {};
 
 io.on('connection', (socket) => {
 
-  socket.on('room', ({room, user})=> {
-    socket.join(room);
-    // update database from here
-    // update the id to match the user id in database
-    socket.user = {user:user, id:socket.client.conn.id, status: 'online'};
-    socket.room = room;
-    io.eio.clients.userNames === undefined ?
-      io.eio.clients.userNames=[socket.user] :
-      io.eio.clients.userNames.push(socket.user);
-
-    io.to(room).emit('userWelcome', { newUser: socket.user, connectedUsersList: io.eio.clients.userNames});
-  });
-
-  socket.on('message', ({ room, message })=> {
-    io.to(room).emit('message', message);
-  });
-
-  socket.on('gotKicked', ()=> {
-    //update the database
-    //broadcast the message to room
-  })
-
-  socket.on('disconnect', ()=> {
-    io.to(socket.room).emit('disconnection', socket.user)
-    // find socket.user in client.userNames & update
-    if (io.eio.clients.userNames!==undefined) {
-      for (var i = 0; i < io.eio.clients.userNames.length; i++){
-        let curPos = io.eio.clients.userNames[i];
-        if (curPos.user === socket.user.user && curPos.id === socket.user.id) {
-          io.eio.clients.userNames.splice(i, 1);
-        }
-      }
+  const formatToSend = (connectedUsersList) => {
+    var formattedUsers = [];
+    for (var key in connectedUsersList) {
+      var obj = {};
+      obj['user'] = connectedUsersList[key];
+      obj['status'] = 'online';
+      obj['id'] = key;
+      formattedUsers.push(obj);
     }
-  })
+    return formattedUsers;
+  };
+
+  const joinRoom = (room, user) => {
+    // socket.join(room);
+    // create record for new room if doesn't exist
+    // insert UID:nickname in roomRecords[room]
+    // broadcast updated list of users for roomRecords[room], with welcome to new user
+    // set socket.room = room
+    socket.join(room);
+
+    if (!roomRecords[room]) roomRecords[room] = {};
+    if (!roomRecords[room][socket.id]) roomRecords[room][socket.id] = user;
+    io.to(room).emit('userWelcome',
+      {
+        newUser: {
+          user: roomRecords[room][socket.id],
+          status: 'online',
+          id: socket.id
+        },
+        connectedUsersList: formatToSend(roomRecords[room])
+      });
+    console.log(roomRecords);
+    socket.room = room;
+    socket.nickname = user;
+  }
+
+const leaveRoom = (room) => {
+  //remove current user from list of roomUsers
+  // leave room
+  // broadcast updated list of users for roomRecords[room]
+  delete roomRecords[socket.room][socket.id]
+  socket.leave(room);
+  io.to(room).emit('disconnection', { connectedUsersList: formatToSend(roomRecords[room]) });
+}
+
+socket.on('room', ({ room, user }) => {
+  joinRoom(room, user);
+});
+
+socket.on('message', ({ room, message }) => {
+  io.to(room).emit('message', message);
+});
+
+socket.on('disconnect', () => {
+  console.log('user disconnected');
+  // console.log(socket.id);
+  // console.log(socket.room);
+  // console.log(roomRecords);
+  // leaveRoom(socket.room);
+  if (!!socket.room) leaveRoom(socket.room);
+})
+
+socket.on('swapRoom', ({oldRoom, newRoom}) => {
+  leaveRoom(oldRoom);
+  joinRoom(newRoom, socket.nickname);
+});
+
 });
 
 http.listen(port, () => {

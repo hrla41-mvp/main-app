@@ -3,17 +3,19 @@ import '../css/Chatroom.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import RenderRooms from './RenderRooms'
 class Chatroom extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-
     }
   }
   render() {
     return (
       <div className="MainChatRoomContainer">
         <div className="chatRoomsList">
-          <RenderRooms />
+          <RenderRooms
+            chatRoomsList={this.props.chatRoomsList}
+            updateCurrentRoom={this.props.updateCurrentRoom}
+          />
         </div>
         <div>
           <input className="newRoomInput" type="text" placeholder="Add A New Room"></input>

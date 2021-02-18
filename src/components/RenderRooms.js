@@ -4,121 +4,16 @@ import '../css/RenderRooms.css';
 
  // THIS COMPONENT IS TO DYNAMICALLY RENDER ROOMS USE MAP
 
-const RenderRooms = () => {
+const RenderRooms = ({ chatRoomsList, updateCurrentRoom }) => {
   return (
     <>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
+      {chatRoomsList.map(roomName=> (
+        <div className="RoomsCard" onClick={updateCurrentRoom}>
+          <div>
+            <div className="RoomsName">{roomName}</div>
+          </div>
         </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-
-
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
+      ))}
     </>
   )
 };

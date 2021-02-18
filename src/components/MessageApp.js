@@ -31,6 +31,7 @@ export default class MessageApp extends Component {
       status: 'online',
       users: '',
       room: 'testRoom',
+      chatRoomsList: ['testRoom', 'defaultRoom'],
       message: '',
       friendsList: '',
       roomUsers: [
@@ -49,6 +50,7 @@ export default class MessageApp extends Component {
     this.handleInput = this.handleInput.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
+    this.updateCurrentRoom = this.updateCurrentRoom.bind(this);
   }
 
   componentDidMount() {
@@ -70,6 +72,13 @@ export default class MessageApp extends Component {
     document.querySelector('.newMessageInput').value = '';
   }
 
+  updateCurrentRoom(e) {
+    let newRoom = e.target.innerHTML;
+    if (newRoom===this.state.room) return;
+    socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom});
+    this.setState({ room: newRoom});
+  }
+
   configureSocket() {
     let room = this.state.room;
     let user = this.state.user;
@@ -89,36 +98,12 @@ export default class MessageApp extends Component {
       });
 
       socket.on('userWelcome', ({ newUser, connectedUsersList})=> {
-        console.log('user joined the room');
-        let update = [...this.state.roomUsers];
-        update.push(newUser)
-        for (var j=0; j<connectedUsersList.length; j++) {
-          let isInList = false;
-          for (var i=0; i < update.length; i++) {
-            let updateUser = update[i];
-            let conUser = connectedUsersList[j]
-            /* this extra check is meant to avoid any conflicts with duplicate usernames*/
-            if (updateUser.user===conUser.user && updateUser.id === conUser.id) {
-              if (update[i].status===undefined) update[i]['status']='';
-              update[i].status = 'online';
-              isInList = true;
-            }
-          }
-          if (!isInList) update.push(connectedUsersList[j]);
-        }
-        this.setState({roomUsers: update});
+        this.setState({roomUsers: connectedUsersList});
       });
 
-      socket.on('disconnection', (user)=> {
-        console.log('user left the room');
-        // find user with matching id, update status
-        let update = [...this.state.roomUsers];
-        for (var i = 0; i < update.length; i++) {
-          if (update[i].user === user.user && update[i].id === user.id) {
-            update.splice(i, 1);
-          }
-        }
-        this.setState({ roomUsers: update });
+      socket.on('disconnection', (updatedList)=> {
+        console.log(updatedList.connectedUsersList);
+        this.setState({ roomUsers: updatedList.connectedUsersList });
       })
 
     });
@@ -128,7 +113,12 @@ export default class MessageApp extends Component {
     return (
       <Container fluid className="messageAppContainer">
         <Row className="messageAppRow">
-          <Col className="messageAppCol" > <Chatroom /> </Col>
+          <Col className="messageAppCol" >
+            <Chatroom
+              chatRoomsList={this.state.chatRoomsList}
+              updateCurrentRoom={this.updateCurrentRoom}
+            />
+          </Col>
           <Col className="messageAppCol" xs={6}> <MessageBoard
             handleInput={this.handleInput}
             handleSendMessage={this.handleSendMessage}
