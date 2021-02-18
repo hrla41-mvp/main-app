@@ -32,14 +32,14 @@ export default class MessageApp extends Component {
     this.handleInput = this.handleInput.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
-    this.configureSocket = this.configureSocket.bind(this);
     this.getRooms = this.getRooms.bind(this);
     this.addRoom = this.addRoom.bind(this);
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
   }
-  // OeCWLaMNOheAq4TtrRi3tbPtivG2
+
 
   componentDidMount() {
+    this.configureSocket();
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         var uid = user.uid;
@@ -55,9 +55,8 @@ export default class MessageApp extends Component {
       .then((res) => this.setState({
         user: res.data,
       }))
-      .then(() => { console.log('user: ', this.state.user) })
+      .then(() => { console.log('Current user in database: ', this.state.user) })
       .then(this.getRooms())
-      .then(this.configureSocket())
       .catch(err => { console.log(err) })
   }
 
