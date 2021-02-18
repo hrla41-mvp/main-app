@@ -152,6 +152,7 @@ export default class MessageApp extends Component {
               addRoom={this.addRoom}
               chatRoomsList={this.state.chatRoomsList}
               updateCurrentRoom={this.updateCurrentRoom}
+              user={this.state.user}
             />
           </Col>
           <Col className="messageAppCol" xs={6}>

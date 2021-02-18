@@ -4,11 +4,11 @@ import '../css/RenderRooms.css';
 
  // THIS COMPONENT IS TO DYNAMICALLY RENDER ROOMS USE MAP
 
-const RenderRooms = ({ chatRoomsList, updateCurrentRoom }) => {
+const RenderRooms = ({ chatRoomsList, updateCurrentRoom, rooms }) => {
 
   const displayChatRooms = () => {
     if (chatRoomsList.length!==0) {
-      return chatRoomsList.map(item => (
+      return rooms.map(item => (
         <div className="RoomsCard" key={Math.random()} onClick={updateCurrentRoom}>
           <div>
             <div className="RoomsName">{item}</div>

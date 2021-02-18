@@ -7,6 +7,7 @@ class Chatroom extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      rooms: this.props.user[0].rooms || []
     }
   }
 
@@ -18,6 +19,7 @@ class Chatroom extends React.Component {
           <RenderRooms
             chatRoomsList={this.props.chatRoomsList}
             updateCurrentRoom={this.props.updateCurrentRoom}
+            rooms={this.props.user[0].rooms || [] }
           />
         </div>
         <div>
