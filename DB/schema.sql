@@ -33,6 +33,12 @@ CREATE TABLE Rooms(
   users TEXT[]
 );
 
+-- DROP TABLE IF EXISTS passwords;
+-- CREATE TABLE passwords(
+--   id INT,
+--   passwrd VARCHAR(100) NOT NULL
+-- );
+
 -- CREATE TABLE Cohort(
 --   cohort_id SERIAL,
 --   cohort_name VARCHAR(100) PRIMARY KEY UNIQUE,

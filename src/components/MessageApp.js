@@ -5,7 +5,9 @@ import Chatroom from './Chatroom';
 import MessageBoard from './MessageBoard';
 import FriendsList from './FriendsList';
 import io from "socket.io-client";
-import Axios from 'axios';
+import axios from 'axios';
+import firebase from '../Firebase';
+
 
 const SERVER = 'localhost:3000';
 const socket = io(SERVER, {
@@ -35,12 +37,35 @@ export default class MessageApp extends Component {
     this.addRoom = this.addRoom.bind(this);
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
   }
+  // OeCWLaMNOheAq4TtrRi3tbPtivG2
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        var uid = user.uid;
+        this.getUserInfo(uid)
+      }
+    });
+  }
+
+  //this function retrieves the user id from the firebase DB and loads the user's details from the DB
+  getUserInfo(user) {
+    axios.get(`/slackreactor/user/${user}`)
+    //Set the state of User to be the user's detail object
+      .then((res) => this.setState({
+        user: res.data,
+      }))
+      .then(() => { console.log('user: ', this.state.user) })
+      .then(this.getRooms())
+      .then(this.configureSocket())
+      .catch(err => { console.log(err) })
+  }
 
   getRooms() {
     // newArray was set to copy initial chatRoomsList
     // to temporarily help debugging
     let newArray = [...this.state.chatRoomsList];
-    Axios.get('/slackreactor/rooms')
+    axios.get('/slackreactor/rooms')
       .then((response) => {
         response.data.map(item => (
           newArray.push(item.room_name)
@@ -66,14 +91,6 @@ export default class MessageApp extends Component {
       document.getElementById('typedValue').value = '';
       this.setState({ room: newRoom });
     }
-  }
-
-  componentDidMount() {
-    this.configureSocket();
-  }
-
-  componentWillReceiveProps() {
-    this.getRooms();
   }
 
   handleInput(e) {
