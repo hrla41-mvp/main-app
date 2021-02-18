@@ -9,6 +9,7 @@ import MessageApp from './MessageApp';
 import Login from './Login';
 
 
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -19,7 +20,6 @@ export default class App extends Component {
     }
     this.logOut = this.logOut.bind(this);
   }
-
   componentDidMount() {
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -31,7 +31,7 @@ export default class App extends Component {
         //   user_id: data
         // })
 
-        Axios.get(`/userInfo/${user.uid}`)
+        Axios.get(`/slackreactor/user/${user.uid}`)
           .then(({data}) => {
             this.setState({
               userObj: data,

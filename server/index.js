@@ -35,7 +35,38 @@ app.post('/slackreactor/rooms', async (req, res) => {
   }
 });
 
-//UPDATE MESSAGES IN A ROOM
+app.post('/slackreactor/authent', async (req, res) => {
+  try {
+    const query = `INSERT INTO passwords (id, passwrd) VALUES('1', '${req.body.password}');`
+    const dbQuery = await pool.query(query);
+    res.json(dbQuery.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+});
+
+app.put('/slackreactor/authent/:id', async (req, res) => {
+  try {
+    const password = req.body.password;
+    const query = `UPDATE passwords SET passwrd = '${password}';`
+    const dbQuery = await pool.query(query);
+    res.json(dbQuery.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+})
+
+app.get('/slackreactor/authent', async (req, res) => {
+  try {
+    const query = 'SELECT * FROM passwords WHERE id = 1;'
+    const dbQuery = await pool.query(query);
+    res.json(dbQuery.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+})
+
+//UPDATES MESSAGES IN A ROOM
 app.put('/slackreactor/rooms/messages:id', async (req, res) => {
   const newMessage = req.params.id
   try {
@@ -73,7 +104,9 @@ app.put('/slackreactor/rooms/users:id', async (req, res) => {
 
 //ADDS NEW USER
 app.post('/slackreactor/users', async (req, res) => {
+  console.log(req.body)
   try {
+    // const {user_id, cohort, friends, staff, first_name, last_name, profile_pic, rooms, last_login} = req.body;
     const { room_name, users } = req.body;
     const user_id = req.body.user_id;
     const cohort = req.body.cohort;
@@ -126,6 +159,9 @@ app.put('/slackreactor/users/:id', async (req, res) => {
   //for all other user detail updates:
   try {
     const column = Object.keys(req.body)
+    console.log(req.body[column])
+    console.log(itemToBeUpdated)
+
     const query = `UPDATE Users SET ${column} = '${req.body[column]}' WHERE user_id = '${itemToBeUpdated}'`
     const dbQuery = await pool.query(query);
     res.json(query.rows)
@@ -161,9 +197,10 @@ app.get(/\/(SignUp|MessageApp|Login)/, (req, res) => {
 })
 
 //RETRIEVES A SPECIFIC USER
-app.get('/userInfo/:user_id', async (req, res) => {
+app.get('/slackreactor/user/:id', async (req, res) => {
   try {
-    const product = await pool.query(`SELECT * FROM Users WHERE user_id = '${req.params.user_id}'`);
+    console.log('userId ', req.params)
+    const product = await pool.query(`SELECT * FROM Users WHERE user_id = '${req.params.id}'`);
     res.json(product.rows)
   } catch (err) {
     console.error(err.message)
