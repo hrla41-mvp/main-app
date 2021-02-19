@@ -18,7 +18,6 @@ export default function Login() {
     e.preventDefault();
 
     // Send the log in information
-    console.log(email)
     firebase.auth().signInWithEmailAndPassword(email, password1)
       .then((userCredential) => {
         // Signed in

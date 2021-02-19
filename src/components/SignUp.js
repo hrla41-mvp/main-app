@@ -16,7 +16,6 @@ export default function SignUp() {
 
 
   function handleFormInput(e) {
-    // console.log(e.target.name)
     if (e.target.name === 'email') {
       setEmail(e.target.value);
     } else if (e.target.name === 'password1') {
@@ -35,15 +34,6 @@ export default function SignUp() {
     } else if (e.target.name === 'profilePic') {
       setProfilePic(e.target.value);
     }
-
-
-    // console.log('Email: ', email);
-    // console.log('Password1: ', password1);
-    // console.log('password2: ', password2);
-    // console.log('First: ', firstName);
-    // console.log('Last: ', lastName);
-    // console.log('cohort: ', cohort);
-    // console.log('staff: ', staff);
   }
 
   function handleFormSubmit(e) {
@@ -69,8 +59,6 @@ export default function SignUp() {
           last_login: '10:00am',
           rooms: ['HEllO','ROOMID']
         })
-
-
       })
       .catch((error) => {
         console.log(error)
