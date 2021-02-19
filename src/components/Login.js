@@ -32,20 +32,17 @@ export default function Login() {
 
   return (
     <Container className="signUpForm mt-5">
-        <Form onSubmit={handleFormSubmit}>
+        <Form style={{color: '#55dc9e'}} onSubmit={handleFormSubmit}>
           <Form.Group controlId="formBasicEmail" onChange={handleFormInput}>
             <Form.Label>Email address</Form.Label>
-            <Form.Control required type="email" name="email" placeholder="Enter email" />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
+            <Form.Control required type="email" name="email" placeholder="Enter email" style={{backgroundColor: '#000', color: 'white'}} />
           </Form.Group>
           <Form.Group controlId="formBasicPassword" onChange={handleFormInput}>
             <Form.Label>Password</Form.Label>
-            <Form.Control required type="password" name="password1" placeholder="Password" />
+            <Form.Control required type="password" name="password1" placeholder="Password" style={{backgroundColor: '#000', color: 'white'}} />
           </Form.Group>
-          <a className="text-primary d-block" href="/SignUp">Don't have an account? Sign Up</a>
-          <Button className="mt-3" variant="primary" type="submit">
+          <a className="d-block" href="/SignUp" style={{width: '250px', color: 'white'}} >Don't have an account? Sign Up</a>
+          <Button className="mt-3" variant="primary" type="submit" style={{backgroundColor: '#55dc9e', color: 'black', border: 'none'}}>
             Submit
           </Button>
         </Form>
