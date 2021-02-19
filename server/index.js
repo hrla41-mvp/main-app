@@ -13,58 +13,17 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 const axios = require('axios');
 
 //ADDS A ROOM TO DATABASE
-
 app.post('/slackreactor/rooms', async (req, res) => {
   try {
     const { room_name, users } = req.body;
-    const user_id = req.body.messages[0].user_id;
-    const first_name = req.body.messages[0].first_name;
-    const last_name = req.body.messages[0].last_name;
-    const profile_pic = req.body.messages[0].profile_pic;
-    const post = req.body.messages[0].message;
-
-    //this puts the object into an ingestible Postgres form
-    const text = `{user_id: ${user_id}, first_name: ${first_name}, last_name: ${last_name}, profile_pic: ${profile_pic}, message: ${post}}`
-    const stringified = JSON.stringify(text)
-
-    const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${room_name}', '{${stringified}}', '{${users}}');`
+    var room = room_name.replace(/[\/\(\)\']/g, "&apos;");
+    const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${room}', '{}', '{${users}}');`
     const newMessage = await pool.query(query);
     res.json(query.rows)
   } catch (err) {
     console.error(err.message)
   }
 });
-
-app.post('/slackreactor/authent', async (req, res) => {
-  try {
-    const query = `INSERT INTO passwords (id, passwrd) VALUES('1', '${req.body.password}');`
-    const dbQuery = await pool.query(query);
-    res.json(dbQuery.rows)
-  } catch (err) {
-    console.error(err.message)
-  }
-});
-
-app.put('/slackreactor/authent/:id', async (req, res) => {
-  try {
-    const password = req.body.password;
-    const query = `UPDATE passwords SET passwrd = '${password}';`
-    const dbQuery = await pool.query(query);
-    res.json(dbQuery.rows)
-  } catch (err) {
-    console.error(err.message)
-  }
-})
-
-app.get('/slackreactor/authent', async (req, res) => {
-  try {
-    const query = 'SELECT * FROM passwords WHERE id = 1;'
-    const dbQuery = await pool.query(query);
-    res.json(dbQuery.rows)
-  } catch (err) {
-    console.error(err.message)
-  }
-})
 
 //UPDATES MESSAGES IN A ROOM
 app.put('/slackreactor/rooms/messages:id', async (req, res) => {
@@ -78,12 +37,23 @@ app.put('/slackreactor/rooms/messages:id', async (req, res) => {
     const post = req.body.message;
 
     //this puts the object into an ingestible Postgres form
-    const text = `{user_id: ${user_id}, first_name: ${first_name}, last_name: ${last_name}, profile_pic: ${profile_pic}, message: ${post}}`
+    var final_string = post.replace(/[\/\(\)\']/g, "&apos;");
+    const text = `{user_id: ${user_id}, first_name: ${first_name}, last_name: ${last_name}, profile_pic: ${profile_pic}, message: ${final_string}}`
 
     const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_id = '${newMessage}';`
-
     const newPost = await pool.query(query);
     res.json(query.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+});
+
+//GETS ALL ROOMS
+app.get('/slackreactor/rooms', async (req, res) => {
+  try {
+    const product = await pool.query(`SELECT * FROM Rooms LIMIT 10`);
+    let returner = JSON.stringify(product.rows).replace(/(&apos;)/g, "'");
+    res.json(JSON.parse(returner));
   } catch (err) {
     console.error(err.message)
   }
@@ -170,16 +140,6 @@ app.put('/slackreactor/users/:id', async (req, res) => {
   }
 });
 
-//RETRIEVES ALL ROOMS
-app.get('/slackreactor/rooms', async (req, res) => {
-  try {
-    const product = await pool.query(`SELECT * FROM Rooms LIMIT 10`);
-    res.json(product.rows)
-  } catch (err) {
-    console.error(err.message)
-  }
-});
-
 //RETRIEVES ALL USERS
 app.get('/slackreactor/users', async (req, res) => {
   try {
@@ -206,6 +166,31 @@ app.get('/slackreactor/user/:id', async (req, res) => {
     console.error(err.message)
   }
 });
+
+  //This function adds messages from a room into a database
+  const addMessageToRoom = (room, message) => {
+
+    const text = `{user_id: ${message.user_id}, first_name: ${message.first_name}, last_name: ${message.last_name}, profile_pic: ${message.profile_pic}, message: ${message.message}}`
+
+    const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_id = '${room}';`
+    const newPost = pool.query(query);
+  }
+
+  //this function adds rooms to a database
+  const addRoomtoDB = (roomName, user) => {
+    //if exists, and user is not within users, add user to room
+      //if exists, and user is in users, do nothing
+      //else create room
+      const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${roomName}', '{}', '{${user}}') ON CONFLICT (room_name) DO UPDATE SET users = array_append(Rooms.users, '${user}');`
+
+      const dbQuery = pool.query(query);
+
+  }
+
+  //this function adds users to a room - to be implemented already on front end
+
+  //this function adds friends to a user
+
 
 let roomRecords = {};
 
@@ -255,6 +240,7 @@ io.on('connection', (socket) => {
 
   socket.on('message', ({ room, message }) => {
     io.to(room).emit('message', message);
+    addMessageToRoom(room, message);
   });
 
   socket.on('disconnect', () => {

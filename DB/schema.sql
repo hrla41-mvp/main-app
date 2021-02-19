@@ -28,7 +28,7 @@ CREATE TABLE Users(
 DROP TABLE IF EXISTS Rooms;
 CREATE TABLE Rooms(
   room_id SERIAL NOT NULL,
-  room_name VARCHAR(100),
+  room_name VARCHAR(100) UNIQUE,
   messages TEXT[],
   users TEXT[]
 );
