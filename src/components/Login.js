@@ -12,8 +12,6 @@ export default function Login() {
     } else if (e.target.name === 'password1') {
       setPassword1(e.target.value);
     }
-    console.log('Email: ', email);
-    console.log('password1: ', password1);
   }
 
   function handleFormSubmit(e) {
