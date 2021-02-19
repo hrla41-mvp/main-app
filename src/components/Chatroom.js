@@ -7,7 +7,21 @@ class Chatroom extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rooms: this.props.user[0].rooms || []
+      rooms: this.props.user.rooms || [],
+      newRoom: '',
+    }
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+  }
+
+  handleInput (e) {
+    this.setState({newRoom: e.target.value})
+  }
+
+  handleSubmit (e) {
+    e.preventDefault;
+    if (e.key === 'Enter') {
+    this.props.addRoom(this.state.newRoom)
     }
   }
 
@@ -19,11 +33,11 @@ class Chatroom extends React.Component {
           <RenderRooms
             chatRoomsList={this.props.chatRoomsList}
             updateCurrentRoom={this.props.updateCurrentRoom}
-            rooms={this.props.user[0].rooms || [] }
+            rooms={this.props.user.rooms || [] }
           />
         </div>
         <div>
-          <input className="newRoomInput" id="typedValue" type="text" placeholder="Add A New Room" onKeyPress={this.props.addRoom}></input>
+          <input className="newRoomInput" id="typedValue" type="text" placeholder="Add A New Room" onChange={this.handleInput} onKeyPress={this.handleSubmit}></input>
         </div>
       </div>
     )

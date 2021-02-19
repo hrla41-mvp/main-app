@@ -26,13 +26,14 @@ export default class MessageApp extends Component {
       roomsUsers: [],
       room: 'defaultRoom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
-      user: 'dubz'
+      user: 'dubz',
+      username: ''
     }
 
     this.handleInput = this.handleInput.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
-    this.getRooms = this.getRooms.bind(this);
+    // this.getRooms = this.getRooms.bind(this);
     this.addRoom = this.addRoom.bind(this);
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
   }
@@ -52,44 +53,49 @@ export default class MessageApp extends Component {
   getUserInfo(user) {
     axios.get(`/slackreactor/user/${user}`)
     //Set the state of User to be the user's detail object
-      .then((res) => this.setState({
-        user: res.data,
-      }))
-      .then(() => { console.log('Current user in database: ', this.state.user) })
-      .then(this.getRooms())
+      .then((res) => {
+        let user = res.data[0]
+        this.setState({
+        user: user,
+        room: user.rooms[0],
+        chatRoomsList: user.rooms,
+        username: `${user.first_name} ${user.last_name}`,
+        userId: user.user_id
+      })})
+      .then(() => { console.log('Current user in database: ', this.state) })
+      // .then(this.getRooms())
       .catch(err => { console.log(err) })
   }
 
-  getRooms() {
-    // newArray was set to copy initial chatRoomsList
-    // to temporarily help debugging
-    let newArray = [...this.state.chatRoomsList];
-    axios.get('/slackreactor/rooms')
-      .then((response) => {
-        response.data.map(item => (
-          newArray.push(item.room_name)
-        ))
-        this.setState({
-          chatRoomsList: newArray,
-        })
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-  }
+  // getRooms() {
+  //   // newArray was set to copy initial chatRoomsList
+  //   // to temporarily help debugging
+  //   let newArray = [...this.state.chatRoomsList];
+  //   axios.get('/slackreactor/rooms')
+  //     .then((response) => {
+  //       response.data.map(item => (
+  //         newArray.push(item.room_name)
+  //       ))
+  //       this.setState({
+  //         chatRoomsList: newArray,
+  //       })
+  //     })
+  //     .catch((err) => {
+  //       console.error(err)
+  //     })
+  // }
 
-  addRoom(e) {
-    if (e.key === 'Enter') {
-      let newRoom = document.getElementById('typedValue').value;
-      // NO PUSHING ROOMS & MESSAGES TO THE DATABASE FROM THE FRONT END;
-      // ALL DATABASE PUSHES MUST BE DONE FROM THE BACK END'S SOCKETS SECTION
-      // PLEASE SEE WITH DUBEAYI
-      // Axios.post('/slackreactor/rooms', {})
-      if (newRoom === this.state.room) return;
-      socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
+  addRoom(room) {
+      if (room === this.state.room) return;
+      socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: room });
       document.getElementById('typedValue').value = '';
-      this.setState({ room: newRoom });
-    }
+      this.setState({ room: room, chatRoomsList: this.state.chatRoomsList.push(room)});
+      axios.post('/slackreactor/rooms', {
+        room_name: room,
+        users: this.state.username,
+        messages: []
+      })
+      .catch(err => {console.log(err)})
   }
 
   handleInput(e) {
