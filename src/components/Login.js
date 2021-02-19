@@ -12,15 +12,12 @@ export default function Login() {
     } else if (e.target.name === 'password1') {
       setPassword1(e.target.value);
     }
-    console.log('Email: ', email);
-    console.log('password1: ', password1);
   }
 
   function handleFormSubmit(e) {
     e.preventDefault();
 
     // Send the log in information
-    console.log(email)
     firebase.auth().signInWithEmailAndPassword(email, password1)
       .then((userCredential) => {
         // Signed in

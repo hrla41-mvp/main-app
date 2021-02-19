@@ -62,10 +62,10 @@ export default class App extends Component {
 
     if (isSignedIn) {
       dynamicHeader =
-      <Navbar bg="dark" variant="dark" className="header-Chat-App">
-        <Navbar.Brand href="/">Slack Reactor</Navbar.Brand>
+      <Navbar className="header-Chat-App">
+        <Navbar.Brand className="brand-Name" href="/">Slack Reactor</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link href="/MessageApp">MessageApp</Nav.Link>
+          <Nav.Link className="navLink" href="/MessageApp">MessageApp</Nav.Link>
         </Nav>
         <Form inline>
           <Button variant="light" onClick={this.logOut}>Log Out</Button>
@@ -73,11 +73,11 @@ export default class App extends Component {
       </Navbar>
     } else {
       dynamicHeader =
-      <Navbar bg="dark" variant="dark" className="header-Chat-App">
-        <Navbar.Brand href="/">Slack Reactor</Navbar.Brand>
+      <Navbar className="header-Chat-App">
+        <Navbar.Brand className="brand-Name" href="/">Slack Reactor</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link href="/SignUp">Sign Up</Nav.Link>
-          <Nav.Link href="/Login">Log In</Nav.Link>
+          <Nav.Link className="navLink" href="/SignUp">Sign Up</Nav.Link>
+          <Nav.Link className="navLink" href="/Login">Log In</Nav.Link>
         </Nav>
       </Navbar>
     }

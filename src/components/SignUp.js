@@ -16,7 +16,6 @@ export default function SignUp() {
 
 
   function handleFormInput(e) {
-    console.log(e.target.name)
     if (e.target.name === 'email') {
       setEmail(e.target.value);
     } else if (e.target.name === 'password1') {
@@ -35,15 +34,6 @@ export default function SignUp() {
     } else if (e.target.name === 'profilePic') {
       setProfilePic(e.target.value);
     }
-
-
-    console.log('Email: ', email);
-    console.log('Password1: ', password1);
-    console.log('password2: ', password2);
-    console.log('First: ', firstName);
-    console.log('Last: ', lastName);
-    console.log('cohort: ', cohort);
-    console.log('staff: ', staff);
   }
 
   function handleFormSubmit(e) {
@@ -69,20 +59,6 @@ export default function SignUp() {
           last_login: '10:00am',
           rooms: ['HEllO','ROOMID']
         })
-
-        /*
-        user_id VARCHAR(100) PRIMARY KEY NOT NULL,
-        first_name VARCHAR(40) UNIQUE NOT NULL,
-        last_name VARCHAR(40) NOT NULL,
-        cohort VARCHAR(100) NOT NULL,
-        staff BOOLEAN,
-        friends TEXT[],
-        profile_pic VARCHAR(100) NOT NULL UNIQUE,
-        last_login TIMESTAMP,
-        rooms TEXT[]
-        */
-
-        // userCredential.user.uid
       })
       .catch((error) => {
         console.log(error)

@@ -1,12 +1,59 @@
 .landingPage{
   width: 100%;
   height: 93vh;
-  background-color: #1793ff;
+  background-color: black;
 }
 
 .nameOfApp {
-  height: 30vh;
-  padding-top: 3rem;
-  text-align: center;
-  font-size: 4rem;
+  height: 60%;
+  /* padding-top: 11rem; */
+  /* text-align: center; */
+  font-size: 5rem;
+}
+.splitSection{
+  height: 40%;
+}
+
+.splitSectionLeftCol {
+  background-color: black;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 35px;
+  color: white;
+}
+
+
+.splitSectionRightCol {
+  background-color: black;
+  font-family: 'Barlow Condensed', sans-serif;
+
+}
+
+.footerSection {
+  height: 25%;
+}
+
+.slackReactor {
+  color: #55dc9e;
+  font-family: 'Anton', sans-serif;
+  position: absolute;
+  bottom: -25px;
+}
+
+.socialRows {
+  height: 50%;
+  font-size: 25px;
+  color: #55dc9e;
+}
+
+.contributors {
+  color: white;
+  font-family: 'Oswald', sans-serif;
+  position: absolute;
+  bottom: 0;
+  font-size: 1.5rem;
+  /* color: #d3ffe9; */
+}
+
+.names {
+  height: 40%;
 }
