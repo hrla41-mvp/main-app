@@ -7,4 +7,17 @@
 
 .header-Chat-App {
   height: 7vh;
+  background-color: black !important;
+}
+
+.brand-Name {
+  color: #55dc9e !important;
+}
+
+.navLink {
+  color: white !important;
+}
+
+.navLink:hover {
+  color: #55dc9e !important;
 }
