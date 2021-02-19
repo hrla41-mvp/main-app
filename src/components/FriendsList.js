@@ -11,6 +11,7 @@ class FriendsList extends React.Component {
     }
   }
   render () {
+    console.log('propppss', this.props)
     var messageBody = document.getElementsByClassName('MessageBoardContainer');
     if (messageBody[0] === undefined) {
     } else {
@@ -20,10 +21,10 @@ class FriendsList extends React.Component {
     return(
       <>
       <div className="FriendsList">
-        <div className="RoomNameCard">{this.props.room}</div>
+        <div className="RoomNameCard">{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
         <div className="PeopleInRoom">People In The Room
           <RenderPeople
-            userName={this.props.user}
+            user={this.props.user}
             roomUsers={this.props.roomUsers}
           /></div>
         <input type="text" placeholder="Type a username" className="EnterUsername"></input>

@@ -8,25 +8,43 @@ class MessageBoard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      message: ''
     }
+    this.handleInput = this.handleInput.bind(this);
+    this.handleSendMessage = this.handleSendMessage.bind(this);
+  }
+
+  handleSendMessage(e) {
+    if (e.key === 'Enter') {
+      let room = this.props.user.room;
+      let message = this.state.message;
+
+      this.props.sendMessage(room, message)
+      this.setState({ message: '' })
+      document.querySelector('.newMessageInput').value = '';
+    }
+  }
+
+  handleInput(e) {
+    this.setState({ message: e.target.value })
   }
 
   render() {
     return (
       <div className="MessageBoardContainer">
         <div>
-          <h1 className="roomName">Room Name Here</h1>
+          <h1 className="roomName">{this.props.user.room}</h1>
         </div>
         <div>
-          {this.props.messages.map(element => (
-            <RenderMessages messages={element} key={Math.random()}/>
+          {this.props.user.messages.map(element => (
+            <RenderMessages messages={element} key={Math.random()} />
           ))}
         </div>
         <div>
-          <form>
-            <input className="newMessageInput" type="text" placeholder="Whats on your mind?" onChange={this.props.handleInput}></input>
-            <button name="Submit" onClick={this.props.handleSendMessage}>Submit</button>
-          </form>
+            <input className="newMessageInput" type="text" placeholder="Whats on your mind?"
+            onChange={this.handleInput}
+            onKeyPress={this.handleSendMessage}
+            />
         </div>
       </div>
     )
