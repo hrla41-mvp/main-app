@@ -167,24 +167,39 @@ app.get('/slackreactor/user/:id', async (req, res) => {
   }
 });
 
+ //This function retrieves a specific room from the database
+ const getRoom = (room) => {
+
+  const text = `SELECT * FROM Rooms WHERE room_name = '${room}'`
+  const newPost = pool.query(query)
+    .catch(err => (console.log(err)))
+}
+
   //This function adds messages from a room into a database
   const addMessageToRoom = (room, message) => {
 
-    const text = `{user_id: ${message.user_id}, first_name: ${message.first_name}, last_name: ${message.last_name}, profile_pic: ${message.profile_pic}, message: ${message.message}}`
+    var final_string = message.message.replace(/[\/\(\)\']/g, "&apos;");
+    const text = `{user_id: ${message.user_id}, first_name: ${message.first_name}, last_name: ${message.last_name}, profile_pic: ${message.profile_pic}, message: ${final_string}, timestamp: ${message.timestamp}}`
+    const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_name = '${room}';`
+    const newPost = pool.query(query)
+      .catch(err => (console.log(err)))
+  }
 
-    const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_id = '${room}';`
-    const newPost = pool.query(query);
+  const addRoomtoUser = (room, user_id) => {
+        const query = `UPDATE Users SET rooms = array_append(rooms, '${room}') WHERE user_id = '${user_id}'`
+        const dbQuery = pool.query(query)
+          .catch(err => console.log(err));
   }
 
   //this function adds rooms to a database
-  const addRoomtoDB = (roomName, user) => {
+  const addRoomtoDB = (roomName, username) => {
     //if exists, and user is not within users, add user to room
       //if exists, and user is in users, do nothing
       //else create room
-      const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${roomName}', '{}', '{${user}}') ON CONFLICT (room_name) DO UPDATE SET users = array_append(Rooms.users, '${user}');`
+      const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${roomName}', '{}', '{${username}}') ON CONFLICT (room_name) DO UPDATE SET users = array_append(Rooms.users, '${username}');`
 
-      const dbQuery = pool.query(query);
-
+      const dbQuery = pool.query(query)
+        .catch(err => (console.log(err)))
   }
 
   //this function adds users to a room - to be implemented already on front end
@@ -240,6 +255,7 @@ io.on('connection', (socket) => {
 
   socket.on('message', ({ room, message }) => {
     io.to(room).emit('message', message);
+    console.log(message.message)
     addMessageToRoom(room, message);
   });
 
@@ -248,9 +264,10 @@ io.on('connection', (socket) => {
     if (!!socket.room) leaveRoom(socket.room);
   })
 
-  socket.on('swapRoom', ({ oldRoom, newRoom }) => {
+  socket.on('swapRoom', ({ oldRoom, newRoom, username, user_id }) => {
     leaveRoom(oldRoom);
     joinRoom(newRoom, socket.nickname);
+    addRoomtoUser(newRoom, user_id);
   });
 
 });

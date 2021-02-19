@@ -18,22 +18,19 @@ export default class MessageApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userId: this.props.userId,
-      userObj: this.props.userObj,
       currentRoom: {},
       messages: [],
       message: '',
       roomsUsers: [],
-      room: 'defaultRoom',
+      room: 'Bedroom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
       user: 'dubz',
       username: ''
     }
 
-    this.handleInput = this.handleInput.bind(this);
-    this.handleSendMessage = this.handleSendMessage.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
-    // this.getRooms = this.getRooms.bind(this);
+    this.getRooms = this.getRooms.bind(this);
     this.addRoom = this.addRoom.bind(this);
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
   }
@@ -55,62 +52,59 @@ export default class MessageApp extends Component {
     //Set the state of User to be the user's detail object
       .then((res) => {
         let user = res.data[0]
+        let lastRoom = user.rooms.length - 1
         this.setState({
         user: user,
-        room: user.rooms[0],
+        room: user.rooms[lastRoom],
         chatRoomsList: user.rooms,
         username: `${user.first_name} ${user.last_name}`,
         userId: user.user_id
       })})
-      .then(() => { console.log('Current user in database: ', this.state) })
       // .then(this.getRooms())
       .catch(err => { console.log(err) })
   }
 
-  // getRooms() {
-  //   // newArray was set to copy initial chatRoomsList
-  //   // to temporarily help debugging
-  //   let newArray = [...this.state.chatRoomsList];
-  //   axios.get('/slackreactor/rooms')
-  //     .then((response) => {
-  //       response.data.map(item => (
-  //         newArray.push(item.room_name)
-  //       ))
-  //       this.setState({
-  //         chatRoomsList: newArray,
-  //       })
-  //     })
-  //     .catch((err) => {
-  //       console.error(err)
-  //     })
-  // }
+  getRooms() {
+    // newArray was set to copy initial chatRoomsList
+    // to temporarily help debugging
+    let newArray = [...this.state.chatRoomsList];
+    axios.get('/slackreactor/rooms')
+      .then((response) => {
+        response.data.map(item => (
+          newArray.push(item.room_name)
+        ))
+        this.setState({
+          chatRoomsList: newArray,
+        })
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
 
   addRoom(room) {
       if (room === this.state.room) return;
-      socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: room });
+      socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: room, username: this.state.username, user_id: this.state.user.user_id });
       document.getElementById('typedValue').value = '';
       this.setState({ room: room, chatRoomsList: this.state.chatRoomsList.push(room)});
       axios.post('/slackreactor/rooms', {
         room_name: room,
-        users: this.state.username,
-        messages: []
+        users:`${this.state.user.first_name} ${this.state.user.last_name}`,
       })
-      .catch(err => {console.log(err)})
   }
 
-  handleInput(e) {
-    this.setState({ message: e.target.value })
-  }
+  sendMessage (room, message) {
+    let user = this.state.user;
 
-  handleSendMessage(e) {
-    e.preventDefault();
-    let room = this.state.room;
-    var message = this.state.message;
-
-    socket.emit('message', { room: room, message: message });
-    this.setState({ message: '' })
-
-    document.querySelector('.newMessageInput').value = '';
+    let chatMessage = {
+      user_id: user.user_id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      profile_pic: user.profile_pic,
+      message: message,
+      timestamp: Date.now()
+    }
+      socket.emit('message', { room: room, message: chatMessage });
   }
 
   updateCurrentRoom(e) {
@@ -132,9 +126,10 @@ export default class MessageApp extends Component {
     socket.on('connect', () => {
       socket.emit('room', { room, user });
 
-      socket.on('message', function (msg) {
+      socket.on('message', function (user) {
         let messageCopy = messages
-        messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
+        messageCopy.push({ message: user.message, avatar: user.profile_pic, username: `${user.first_name} ${user.last_name}`, timestamp: user.timestamp })
+        // messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
         setter(messageCopy);
       });
 
@@ -163,15 +158,14 @@ export default class MessageApp extends Component {
           </Col>
           <Col className="messageAppCol" xs={6}>
             <MessageBoard
-              handleInput={this.handleInput}
-              handleSendMessage={this.handleSendMessage}
-              messages={this.state.messages}
+              sendMessage={this.sendMessage}
+              user={this.state}
             />
           </Col>
           <Col className="messageAppCol" >
             <FriendsList
               room={this.state.room || 'defaultRoom'}
-              userName={this.state.user || 'Enter a Name Here'}
+              user={this.state.user || 'Enter a Name Here'}
               roomUsers={this.state.roomsUsers}
             />
           </Col>
