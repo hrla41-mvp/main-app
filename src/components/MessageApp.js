@@ -8,17 +8,14 @@ import io from "socket.io-client";
 import axios from 'axios';
 import firebase from '../Firebase';
 
-
 const SERVER = 'localhost:3000';
-const socket = io(SERVER, {
-  transports: ["websocket", "polling"]
-});
 
 export default class MessageApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
       currentRoom: {},
+      socket: {},
       messages: [],
       message: '',
       roomsUsers: [],
@@ -35,9 +32,8 @@ export default class MessageApp extends Component {
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
   }
 
-
   componentDidMount() {
-    this.configureSocket();
+    // this.configureSocket();
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         var uid = user.uid;
@@ -52,15 +48,15 @@ export default class MessageApp extends Component {
     //Set the state of User to be the user's detail object
       .then((res) => {
         let user = res.data[0]
-        let lastRoom = user.rooms.length - 1
         this.setState({
         user: user,
-        room: user.rooms[lastRoom],
+        room: user.rooms[0],
         chatRoomsList: user.rooms,
         username: `${user.first_name} ${user.last_name}`,
         userId: user.user_id
-      })})
+      }), this.configureSocket(res.data)})
       // .then(this.getRooms())
+      // .then(this.configureSocket())
       .catch(err => { console.log(err) })
   }
 
@@ -84,7 +80,7 @@ export default class MessageApp extends Component {
 
   addRoom(room) {
       if (room === this.state.room) return;
-      socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: room, username: this.state.username, user_id: this.state.user.user_id });
+      this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: room, username: this.state.username, user_id: this.state.user.user_id });
       document.getElementById('typedValue').value = '';
       this.setState({ room: room, chatRoomsList: this.state.chatRoomsList.push(room)});
       axios.post('/slackreactor/rooms', {
@@ -104,40 +100,53 @@ export default class MessageApp extends Component {
       message: message,
       timestamp: Date.now()
     }
-      socket.emit('message', { room: room, message: chatMessage });
+      this.state.socket.emit('message', { room: room, message: chatMessage });
   }
 
   updateCurrentRoom(e) {
     let newRoom = e.target.innerHTML;
     if (newRoom === this.state.room) return;
-    socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
+    this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
     this.setState({ room: newRoom });
   }
 
-  configureSocket() {
+  configureSocket(data) {
+    this.setState({
+      socket: io(SERVER, {transports: ["websocket", "polling"]})
+    })
+
     let room = this.state.room;
     let user = this.state.user;
-    let messages = this.state.messages
+    let messages = this.state.messages;
     this.setState.bind(this);
     let setter = (messageCopy) => {
       this.setState({ messages: messageCopy })
     }
     setter.bind(this);
-    socket.on('connect', () => {
-      socket.emit('room', { room, user });
+    console.log('its coming here')
 
-      socket.on('message', function (user) {
+    this.state.socket.on('connect', () => {
+    console.log('its connected')
+
+      this.state.socket.emit('room', { room, user });
+
+      this.state.socket.on('message', function (msg) {
         let messageCopy = messages
-        messageCopy.push({ message: user.message, avatar: user.profile_pic, username: `${user.first_name} ${user.last_name}`, timestamp: user.timestamp })
+        messageCopy.push({
+          message: msg.message,
+          avatar: msg.profile_pic,
+          msgname: `${msg.first_name} ${msg.last_name}`,
+          timestamp: msg.timestamp
+        })
         // messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
         setter(messageCopy);
       });
 
-      socket.on('userWelcome', ({ newUser, connectedUsersList }) => {
+      this.state.socket.on('userWelcome', ({ newUser, connectedUsersList }) => {
         this.setState({ roomsUsers: connectedUsersList });
       });
 
-      socket.on('disconnection', (updatedList) => {
+      this.state.socket.on('disconnection', (updatedList) => {
         this.setState({ roomsUsers: updatedList.connectedUsersList });
       })
 

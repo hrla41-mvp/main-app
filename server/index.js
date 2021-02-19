@@ -129,8 +129,6 @@ app.put('/slackreactor/users/:id', async (req, res) => {
   //for all other user detail updates:
   try {
     const column = Object.keys(req.body)
-    console.log(req.body[column])
-    console.log(itemToBeUpdated)
 
     const query = `UPDATE Users SET ${column} = '${req.body[column]}' WHERE user_id = '${itemToBeUpdated}'`
     const dbQuery = await pool.query(query);
@@ -235,9 +233,10 @@ io.on('connection', (socket) => {
           status: 'online',
           id: socket.id
         },
-        connectedUsersList: formatToSend(roomRecords[room])
+        // connectedUsersList: formatToSend(roomRecords[room])
+        connectedUsersList: Object.values(roomRecords[room])
       });
-    console.log(roomRecords);
+    console.log(Object.values(roomRecords[room]));
     socket.room = room;
     socket.nickname = user;
   }
