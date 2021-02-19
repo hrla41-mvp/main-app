@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Form, Container, Alert, Row, Col } from 'react-bootstrap';
 import firebase from '../Firebase';
 import axios from 'axios';
+import '../css/SignUp.css';
 
 export default function SignUp() {
 
@@ -67,29 +68,29 @@ export default function SignUp() {
 
   return (
     <Container className="signUpForm mt-5">
-        <Form onSubmit={handleFormSubmit}>
+        <Form className="signupform" style={{color: '#55dc9e'}} onSubmit={handleFormSubmit}>
           {(password1 !== password2) ? <Alert variant={'danger'}>
             Passwords do not match!
           </Alert> : null }
           <Form.Group controlId="formBasicEmail" onChange={handleFormInput}>
             <Form.Label>Email address</Form.Label>
-            <Form.Control required type="email" name="email" placeholder="Enter email" />
+            <Form.Control required type="email" name="email" placeholder="Enter email" style={{backgroundColor: '#000', color: 'white'}} />
           </Form.Group>
           <Form.Group controlId="formBasicPassword" onChange={handleFormInput}>
             <Form.Label>Password</Form.Label>
-            <Form.Control required type="password" name="password1" placeholder="Password" />
+            <Form.Control required type="password" name="password1" placeholder="Password" style={{backgroundColor: '#000', color: 'white'}}/>
           </Form.Group>
           <Form.Group controlId="formBasicPasswordConfirmation" onChange={handleFormInput}>
             <Form.Label>Password Confirmation</Form.Label>
-            <Form.Control required type="password" name="password2" placeholder="Password" />
+            <Form.Control required type="password" name="password2" placeholder="Password" style={{backgroundColor: '#000', color: 'white'}} />
           </Form.Group>
           <Form.Group controlId="formBasicName" onChange={handleFormInput}>
             <Form.Label>First Name</Form.Label>
-            <Form.Control required type="text" name="firstName" placeholder="Enter first name" />
+            <Form.Control required type="text" name="firstName" placeholder="Enter first name" style={{backgroundColor: '#000', color: 'white'}}/>
           </Form.Group>
           <Form.Group controlId="formBasicLastName" onChange={handleFormInput}>
             <Form.Label>Last Name</Form.Label>
-            <Form.Control required type="text" name="lastName" placeholder="Enter last name" />
+            <Form.Control required type="text" name="lastName" placeholder="Enter last name" style={{backgroundColor: '#000', color: 'white'}}/>
           </Form.Group>
 
           <Form.Row className="align-items-center">
@@ -100,7 +101,7 @@ export default function SignUp() {
                 as="select"
                 className="mr-sm-2"
                 id="inlineFormCustomSelect"
-                style={{width: '125px'}}
+                style={{width: '125px', backgroundColor: '#000', color: 'white' }}
               >
                 <option value={null}>None</option>
                 <option value="HRLA41">HRLA41</option>
@@ -112,23 +113,41 @@ export default function SignUp() {
               </Form.Control>
             </Col>
             <Col xs="" className="">
-              <div className="text-center">Profile Picture: </div>
-              <Form.File name="profilePic" onChange={handleFormInput} className="" id="exampleFormControlFile1" style={{marginLeft: '20%'}}/>
+              <div className="profilePicString">Profile Picture: </div>
+              {/* <input type="file" id="file" className="custom-file-input" style={{marginLeft: '20%'}} /> */}
+              <label htmlFor="upload-photo" className="text-center uploadLabel">Browse Files</label>
+              <input type="file" name="photo" id="upload-photo" />
+              {/* <Form.File name="profilePic" onChange={handleFormInput} className="" id="exampleFormControlFile1" style={{marginLeft: '20%'}}/> */}
             </Col>
             <Col xs="" className="mt-3 text-right">
-              <Form.Check name="staff" onChange={handleFormInput}
+            {/* <label className="checkboxContain">HR Staff Member?
+              <input type="checkbox" onChange={handleFormInput} />
+            </label> */}
+            {/* <label className="container">One
+              <input type="checkbox" />
+              <span className="checkmark"></span>
+            </label> */}
+            <div style={{display: 'block', textAlign: 'right'}}>HR Staff Member?</div>
+            <div class="container">
+              <div class="round">
+
+                <input type="checkbox" id="checkbox" />
+                <label for="checkbox"></label>
+              </div>
+            </div>
+              {/* <Form.Check name="staff" onChange={handleFormInput}
                 type="checkbox"
                 id="customControlAutosizing"
                 label="HR Staff Member?"
                 custom
-              />
+              /> */}
             </Col>
           </Form.Row>
           <Form.Text className="text-muted mt-3">
               We'll never share your information with anyone else.
             </Form.Text>
-          <a className="text-primary d-block mt-2" href="/Login">Already have an account? Log In</a>
-          <Button className="mt-3" variant="primary" type="submit">
+          <a className="d-block mt-2 already" style={{width: '250px', color: 'white'}} href="/Login">Already have an account? Log In</a>
+          <Button className="mt-3" variant="primary" type="submit" style={{backgroundColor: '#55dc9e', color: 'black', border: 'none'}}>
             Submit
           </Button>
         </Form>
