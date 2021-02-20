@@ -149,13 +149,18 @@ export default class MessageApp extends Component {
       console.log(data);
       let details = data[0];
       let usrObjCpy = { ...this.state.userObj };
-      usrObjCpy.rooms.push(data[0].room_name);
+      usrObjCpy.rooms.push(details.room_name);
+      // extract Messages from imported details.messages
+      const { messagesList, usersPics } = this.extractMessages([details]);
+      console.log(messagesList, usersPics);
       this.setState({
-        room: details.room_name,
-        chatRoomsList: [...this.state.chatRoomsList, details.room_name],
         currentRoom: details,
+        room: details.room_name,
         userObj: usrObjCpy,
-        roomsUsers: data[0].users
+        roomsUsers: data[0].users,
+        messages: messagesList,
+        usersPics: usersPics,
+        chatRoomsList: [...this.state.chatRoomsList, details.room_name],
       });
       this.state.socket.emit('swapRoom', {
         oldRoom: this.state.currentRoom.room_name,
