@@ -152,6 +152,8 @@ export default class MessageApp extends Component {
         }).then((response) => (response.data));
       } else if (!res.data[0].users.includes(this.state.username)) {
         // add uset to room
+        // add room to user
+        axios.put(`/slackreactor/addRoomToUser/${this.state.userObj.user_id}`, { rooms: requestedRoom });
         return axios.put(`/slackreactor/addUserToRoom/${requestedRoom}`, {
           username: `${this.state.user.first_name} ${this.state.user.last_name}`
         }).then((response)=> (response.data.rows));
