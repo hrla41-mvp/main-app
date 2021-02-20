@@ -154,7 +154,8 @@ export default class MessageApp extends Component {
         room: details.room_name,
         chatRoomsList: [...this.state.chatRoomsList, details.room_name],
         currentRoom: details,
-        userObj: usrObjCpy
+        userObj: usrObjCpy,
+        roomsUsers: data[0].users
       });
       this.state.socket.emit('swapRoom', {
         oldRoom: this.state.currentRoom.room_name,
@@ -166,14 +167,15 @@ export default class MessageApp extends Component {
   }
 
   sendMessage (room, message) {
-    let user = this.state.user;
+    let userObj = this.state.userObj;
     let chatMessage = {
-      user_id: user.user_id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      profile_pic: user.profile_pic,
+      user_id: userObj.user_id,
+      first_name: userObj.first_name,
+      last_name: userObj.last_name,
+      username: `${userObj.first_name} ${userObj.last_name}`,
+      profile_pic: userObj.profile_pic,
       message: message,
-      timestamp: Date.now()
+      time: Date.now()
     }
       this.state.socket.emit('message', { room: room, message: chatMessage });
   }
@@ -184,15 +186,18 @@ export default class MessageApp extends Component {
       .then((res) => {
         console.log('data :', res.data);
         const {messagesList, usersPics} = this.extractMessages(res.data);
+        console.log(messagesList, usersPics);
         this.setState({
           currentRoom: res.data[0],
-          room: newRoom,
+          room: res.data[0].room_name,
+          roomsUsers: res.data[0].users,
           messages: messagesList,
-          usersPics: usersPics
+          usersPics: usersPics,
+
         });
         this.state.socket.emit('swapRoom', {
           oldRoom: this.state.room,
-          newRoom: newRoom
+          newRoom: res.data[0].room_name
         });
       })
       .catch(err => console.log(err));
@@ -201,25 +206,26 @@ export default class MessageApp extends Component {
     this.setState({
       socket: io(SERVER, {transports: ["websocket", "polling"]})
     })
-    let room = this.state.room;
-    let user = this.state.user;
-    let messages = this.state.messages;
+    let room = () => this.state.room;
+    let user = () => this.state.user;
+    let messages = () => this.state.messages;
     this.setState.bind(this);
     let setter = (messageCopy) => {
       this.setState({ messages: messageCopy })
     }
     setter.bind(this);
-    // console.log('its coming here')
     this.state.socket.on('connect', () => {
-    // console.log('its connected')
-      this.state.socket.emit('room', { room, user });
-      this.state.socket.on('message', function (msg) {
-        let messageCopy = messages
+      this.state.socket.emit('room', { room: room(), user: user() });
+      this.state.socket.on('message', (msg) => {
+        let messageCopy = [...messages()];
         messageCopy.push({
           message: msg.message,
-          avatar: msg.profile_pic,
-          msgname: `${msg.first_name} ${msg.last_name}`,
-          timestamp: msg.timestamp
+          profile_pic: msg.profile_pic,
+          username: `${msg.username}`,
+          first_name: msg.first_name,
+          last_name: msg.last_name,
+          time: msg.time,
+          user_id: msg.user_id
         })
         // messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
         setter(messageCopy);
