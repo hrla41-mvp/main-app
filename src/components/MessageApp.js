@@ -84,19 +84,6 @@ export default class MessageApp extends Component {
 
 
   //this function retrieves the user id from the firebase DB and loads the user's details from the DB
-
-  /*
-      //   let user = res.data[0]
-      //   this.setState({
-      //   user: user,
-      //   room: user.rooms[0],
-      //   chatRoomsList: user.rooms,
-      //   username: `${user.first_name} ${user.last_name}`,
-      //   userId: user.user_id
-      // }), this.configureSocket(res.data)})
-      // // .then(this.getRooms())
-      // // .then(this.configureSocket())
-  */
   getUserInfo(user) {
     axios.get(`/slackreactor/user/${user}`)
     // axios request to get logged in user obj
@@ -105,6 +92,7 @@ export default class MessageApp extends Component {
       //Grabs the currentRoom
       axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
         .then((res) => {
+          console.log(res.data[0])
           this.setState({
             currentRoom: res.data[0],
             userObj: obj,
@@ -122,15 +110,17 @@ export default class MessageApp extends Component {
   }
 
   updateCurrentRoomOnLoad(roomName) {
+    console.log(roomName)
     axios.get(`/slackreactor/rooms/${roomName}`)
       .then((res) => {
         let room = res.data[0];
+        console.log(room)
         this.setState({ currentRoom: room });
       })
-    .then(()=> {
-      console.log(this.state.currentRoom)
-      console.log(this.state.room);
-      });
+    // .then(()=> {
+    //   console.log(this.state.currentRoom)
+    //   console.log(this.state.room);
+    //   });
   }
 
   getRooms() {
