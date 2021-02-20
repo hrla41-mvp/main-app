@@ -137,6 +137,7 @@ export default class MessageApp extends Component {
     if (newRoom === this.state.room) return;
     this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
     this.setState({ room: newRoom });
+    // Call axios get requests to made update to state
   }
 
   configureSocket(data) {

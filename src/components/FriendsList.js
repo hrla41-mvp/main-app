@@ -11,22 +11,20 @@ class FriendsList extends React.Component {
     }
   }
   render () {
-    console.log('propppss', this.props)
+    let currentRoom = this.props.currentRoom;
+
     var messageBody = document.getElementsByClassName('MessageBoardContainer');
     if (messageBody[0] === undefined) {
     } else {
       messageBody[0].scrollTop = messageBody[0].scrollHeight;
-      // console.log(messageBody)
     }
     return(
       <>
       <div className="FriendsList">
-        <div className="RoomNameCard">{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
+        <div className="RoomNameCard">{currentRoom.room_name}</div>
         <div className="PeopleInRoom">People In The Room
-          <RenderPeople
-            user={this.props.user}
-            roomUsers={this.props.roomUsers}
-          /></div>
+          {(currentRoom.users) ? <RenderPeople currentRoom={currentRoom} /> : null}
+        </div>
         <input type="text" placeholder="Type a username" className="EnterUsername"></input>
       </div>
       </>
@@ -34,22 +32,3 @@ class FriendsList extends React.Component {
   }
 }
 export default FriendsList;
-
-/*
-      <div className="FriendsList">
-        <Container fluid>
-          <Row>
-            <Col className="RoomNameCard">{this.props.room}</Col>
-          </Row>
-        </Container>
-        <Container fluid>
-          <Row>
-            <Col className="PeopleInRoom">People In The Room <RenderPeople
-            userName={this.props.user}
-            roomUsers={this.props.roomUsers}
-            /></Col>
-          </Row>
-            <input type="text" placeholder="Type a username" className="EnterUsername"></input>
-        </Container>
-      </div>
-*/
