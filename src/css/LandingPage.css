@@ -54,6 +54,39 @@
   /* color: #d3ffe9; */
 }
 
+.gap{
+  background-color: black;
+}
+
 .names {
   height: 40%;
+}
+
+.socialMediaSVG {
+  cursor: pointer;
+}
+
+.aboutStatement {
+  height: 60%;
+}
+
+.technologies {
+  height: 20%;
+  font-size: 3rem;
+}
+
+.technologiesTitle {
+  height: 20%;
+  font-size: 2rem;
+  padding-left: 2%;
+}
+
+.techSVG {
+  margin-left: 2%;
+}
+
+@media only screen and (max-width: 900px) {
+  .aboutStatement {
+    font-size: 1.7rem;
+  }
 }

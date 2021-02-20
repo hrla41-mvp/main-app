@@ -22,3 +22,7 @@
 .navLink:hover {
   color: #55dc9e !important;
 }
+
+.dropdownMenu {
+  background-color: #55dc9e !important;
+}

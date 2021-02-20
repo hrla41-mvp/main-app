@@ -7,6 +7,8 @@
 }
 
 .RoomNameCard {
+  /* font-family: 'Oswald', sans-serif;
+  font-weight: 300; */
   padding-top: 8px;
   height: 6vh;
   text-align: center;
@@ -15,6 +17,9 @@
 }
 
 .PeopleInRoom {
+  margin-left: 1rem;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
   height: auto;
   text-align: left;
   border-radius: 5px;

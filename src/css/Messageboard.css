@@ -16,6 +16,8 @@
 }
 
 .roomName {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
   text-align: center;
 }
 

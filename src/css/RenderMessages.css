@@ -4,21 +4,17 @@ img {
 }
 .messages {
   display: block;
-}
-
-.myMessage {
-  background-color: grey;
+  margin-left: 1rem;
 }
 
 .otherMessage {
   background-color: rgb(74, 74, 74);
 }
 
-/* .Message {
-  background-color: rgb(27, 27, 27);
-  width: 7.5rem;
-  text-align: center;
-  padding-top: 7px;
-  border-radius: 5px;
-  color: rgb(34, 101, 179);
-} */
+.Message {
+  width: fit-content;
+  background: green;
+  border-radius: 6px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
