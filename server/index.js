@@ -51,7 +51,7 @@ app.put('/slackreactor/rooms/messages:id', async (req, res) => {
 //GETS ALL ROOMS
 app.get('/slackreactor/rooms', async (req, res) => {
   try {
-    const product = await pool.query(`SELECT * FROM Rooms LIMIT 100`);
+    const product = await pool.query(`SELECT * FROM Rooms`);
     let returner = JSON.stringify(product.rows).replace(/(&apos;)/g, "'");
     res.json(JSON.parse(returner));
   } catch (err) {

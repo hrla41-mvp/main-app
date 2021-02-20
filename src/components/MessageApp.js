@@ -144,9 +144,38 @@ export default class MessageApp extends Component {
   updateCurrentRoom(e) {
     let newRoom = e.target.innerHTML;
     if (newRoom === this.state.room) return;
-    this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
-    this.setState({ room: newRoom });
-    this.updateCurrentRoomOnLoad (newRoom);
+    return axios.get(`/slackreactor/rooms/${newRoom}`)
+      .then((res) => {
+        console.log('data :', res.data);
+        var reggir = /^\{user_id:\s(.*),\sfirst_name:\s(.*),\slast_name:\s(.*),\sprofile_pic:\s(.*),\smessage:\s(.*),\stimestamp:\s(.*)\}$/;
+        let messagesList = [];
+        for (let i = 0; i < res.data.length; i++) {
+          if (res.data[i].messages.length === 0) continue;
+          //itère tous les messages et fait le check
+          for (let j = 0; j < res.data[i].messages.length; j++) {
+            const match = res.data[i].messages[j].match(reggir);
+            if (!match || match.length === 0) continue;
+            messagesList.push({
+              username: `${match[2]} ${match[3]}`,
+              profile_pic: `${match[4]}`,
+              message: `${match[5]}`,
+              time: `${match[6]}`
+            });
+            // TBNoted: SENDERS & TIMESTAMPS CAN BE FOUND IN THE MATCH ARRAY
+            // PLEASE USE FOR DISPLAYING MESSAGE SENDERS
+          }
+        }
+        this.setState({
+          currentRoom: res.data,
+          room: newRoom,
+          messages: messagesList,
+        });
+        this.state.socket.emit('swapRoom', {
+          oldRoom: this.state.room,
+          newRoom: newRoom
+        });
+      })
+      .catch(err => console.log(err));
   }
   configureSocket(data) {
     this.setState({
