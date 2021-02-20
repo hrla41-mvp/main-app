@@ -23,7 +23,8 @@ export default class MessageApp extends Component {
       chatRoomsList: ['defaultRoom', 'testRoom'],
       userObj: {},
       user: {}, ///<----- {}
-      username: ''
+      username: '',
+      profilePics: [],
     }
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -52,7 +53,7 @@ export default class MessageApp extends Component {
       // Grab messages from room
       return axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
         .then((res) => {
-          let messagesList = this.extractMessages(res.data);
+          let {messagesList, profilePics} = this.extractMessages(res.data);
           this.setState({
             currentRoom: res.data[0],
             userObj: obj,
@@ -61,9 +62,10 @@ export default class MessageApp extends Component {
             chatRoomsList: obj.rooms,
             username: `${obj.first_name} ${obj.last_name}`,
             userId: obj.user_id,
-            messages: messagesList
+            messages: messagesList,
+            profilePics: profilePics
           })
-          console.log(obj.rooms[0]);
+          console.log(this.state.messages);
         })
     })
     .then(() => {
@@ -103,12 +105,21 @@ export default class MessageApp extends Component {
   extractMessages(data) {
     var reggir = /^\{user_id:\s(.*),\sfirst_name:\s(.*),\slast_name:\s(.*),\sprofile_pic:\s(.*),\smessage:\s(.*),\stimestamp:\s(.*)\}$/;
     let messagesList = [];
+    let usersPics = [];
+    let usersNames = [];
     for (let i = 0; i < data.length; i++) {
       if (data[i].messages.length === 0) continue;
-      //itère tous les messages et fait le check
       for (let j = 0; j < data[i].messages.length; j++) {
+        //{username, pictures}
         const match = data[i].messages[j].match(reggir);
         if (!match || match.length === 0) continue;
+        if (!usersNames.includes(`${match[2]} ${match[3]}`)) {
+          usersPics.push({
+            username: `${match[2]} ${match[3]}`,
+            profile_pic: `${match[5]}`
+          })
+          usersNames.push(`${match[2]} ${match[3]}`);
+        }
         messagesList.push({
           username: `${match[2]} ${match[3]}`,
           profile_pic: `${match[4]}`,
@@ -119,7 +130,7 @@ export default class MessageApp extends Component {
         // PLEASE USE FOR DISPLAYING MESSAGE SENDERS
       }
     }
-    return messagesList;
+    return { messagesList, usersPics };
   }
   addRoom (requestedRoom) {
     document.getElementById('typedValue').value = '';
@@ -172,11 +183,12 @@ export default class MessageApp extends Component {
     return axios.get(`/slackreactor/rooms/${newRoom}`)
       .then((res) => {
         console.log('data :', res.data);
-        const messagesList = this.extractMessages(res.data);
+        const {messagesList, usersPics} = this.extractMessages(res.data);
         this.setState({
           currentRoom: res.data,
           room: newRoom,
           messages: messagesList,
+          usersPics: usersPics
         });
         this.state.socket.emit('swapRoom', {
           oldRoom: this.state.room,
@@ -242,7 +254,8 @@ export default class MessageApp extends Component {
           <Col className="messageAppCol" >
             <FriendsList
               currentRoom={this.state.currentRoom || 'broken'}
-              userObj={this.state.userObj}
+              // userObj={this.state.userObj}
+              profilePics={this.state.profilePics}
             />
           </Col>
         </Row>
