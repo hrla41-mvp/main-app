@@ -19,12 +19,12 @@ export default class MessageApp extends Component {
       messages: [],
       message: '',
       roomsUsers: [],
+      profilePics: [],
       room: 'Bedroom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
       userObj: {},
       user: {}, ///<----- {}
       username: '',
-      profilePics: [],
     }
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -185,7 +185,7 @@ export default class MessageApp extends Component {
         console.log('data :', res.data);
         const {messagesList, usersPics} = this.extractMessages(res.data);
         this.setState({
-          currentRoom: res.data,
+          currentRoom: res.data[0],
           room: newRoom,
           messages: messagesList,
           usersPics: usersPics
