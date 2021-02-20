@@ -121,7 +121,7 @@ export default function SignUp() {
             <Col xs="" className="">
               <div className="profilePicString">Profile Picture: </div>
               <label htmlFor="upload-photo" className="text-center uploadLabel">Browse Files</label>
-              <input type="file" name="photo" id="upload-photo" />
+              <input type="file" name="photo" id="upload-photo" onChange={handleFormInput}/>
             </Col>
             <Col xs="" className="mt-3 text-right">
               <Form.Check name="staff" onChange={handleFormInput}

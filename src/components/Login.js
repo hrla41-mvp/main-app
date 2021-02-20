@@ -1,6 +1,6 @@
 import React, { useState} from 'react'
 import firebase from '../Firebase';
-import { Button, Form, Container, Alert } from 'react-bootstrap';
+import { Button, Form, Container, Alert, Row, Col } from 'react-bootstrap';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -46,6 +46,9 @@ export default function Login() {
             Submit
           </Button>
         </Form>
+        <Row>
+            <Col>If you are just exploring around the app please login with provided credentials</Col>
+        </Row>
       </Container>
   )
 }
