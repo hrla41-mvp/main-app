@@ -216,6 +216,8 @@ app.put('/slackreactor/addRoomToUser/:id', (req, res) => {
       .catch(err => (console.log(err)))
   }
 
+  // USE OF THIS FUNCTION IS DEPRECATED:
+  // THIS iS NOW HANDLED BY POST REQUEST ON FRONT END
   const addRoomtoUser = (room, user_id) => {
         const query = `UPDATE Users SET rooms = array_append(rooms, '${room}') WHERE user_id = '${user_id}'`
         return pool.query(query)
@@ -285,6 +287,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', ({ room, message }) => {
+    // console.log(room, message);
     io.to(room).emit('message', message);
     addMessageToRoom(room, message);
   });
@@ -300,7 +303,6 @@ io.on('connection', (socket) => {
   });
 
 });
-
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
