@@ -58,6 +58,18 @@ app.get('/slackreactor/rooms', async (req, res) => {
     console.error(err.message)
   }
 });
+//GETS CERTAIN ROOMS MESSAGES
+
+app.get('/slackreactor/rooms/:room', async (req, res) => {
+  try {
+    console.log(req.params)
+    const product = await pool.query(`SELECT * FROM Rooms WHERE room_name = '${req.params.room}'`);
+    let returner = JSON.stringify(product.rows).replace(/(&apos;)/g, "'");
+    res.json(JSON.parse(returner));
+  } catch (err) {
+    console.error(err.message)
+  }
+});
 
 //UPDATES A ROOM'S USERS
 app.put('/slackreactor/rooms/users:id', async (req, res) => {
