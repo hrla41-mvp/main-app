@@ -43,18 +43,26 @@ export default class MessageApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-
-      currentRoom: {},
-      socket: {},
+      currentRoom: {}, // <----- MUST STAY
+      socket: {}, // <------- MUST STAY HERE OR CHAT ROOM CONNECTION WILL BE LOST
       messages: [],
       message: '',
       roomsUsers: [],
       room: 'Bedroom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
+      userObj: {},
       user: {}, ///<----- {}
       username: ''
     }
 
+    /*
+    on mount use firebase function to get firebase
+    query the database with the firebase id to get the specfic users obj
+    in the user obj, there is a rooms array
+    The defualt state of current room will be set to the first room
+    update current room on based on what chatroom was clicked
+
+  */
     this.sendMessage = this.sendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
     this.getRooms = this.getRooms.bind(this);
@@ -76,21 +84,41 @@ export default class MessageApp extends Component {
 
 
   //this function retrieves the user id from the firebase DB and loads the user's details from the DB
+
+  /*
+      //   let user = res.data[0]
+      //   this.setState({
+      //   user: user,
+      //   room: user.rooms[0],
+      //   chatRoomsList: user.rooms,
+      //   username: `${user.first_name} ${user.last_name}`,
+      //   userId: user.user_id
+      // }), this.configureSocket(res.data)})
+      // // .then(this.getRooms())
+      // // .then(this.configureSocket())
+  */
   getUserInfo(user) {
     axios.get(`/slackreactor/user/${user}`)
-    //Set the state of User to be the user's detail object
-      .then((res) => {
-        let user = res.data[0]
-        this.setState({
-        user: user,
-        room: user.rooms[0],
-        chatRoomsList: user.rooms,
-        username: `${user.first_name} ${user.last_name}`,
-        userId: user.user_id
-        }), this.updateCurrentRoomOnLoad(this.state.user.rooms[0]), this.configureSocket(res.data)})
-      // .then(this.getRooms())
-      // .then(this.configureSocket())
-      .catch(err => { console.log(err) })
+    // axios request to get logged in user obj
+    .then((res) => {
+      let obj = res.data[0];
+      //Grabs the currentRoom
+      axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
+        .then((res) => {
+          this.setState({
+            currentRoom: res.data[0],
+            userObj: obj,
+            user: obj,
+            room: obj.rooms[0],
+            chatRoomsList: obj.rooms,
+            username: `${obj.first_name} ${obj.last_name}`,
+            userId: obj.user_id
+          })
+        })
+    })
+    .then(() => {
+      this.configureSocket()
+    })
   }
 
   updateCurrentRoomOnLoad(roomName) {
@@ -169,10 +197,10 @@ export default class MessageApp extends Component {
       this.setState({ messages: messageCopy })
     }
     setter.bind(this);
-    console.log('its coming here')
+    // console.log('its coming here')
 
     this.state.socket.on('connect', () => {
-    console.log('its connected')
+    // console.log('its connected')
 
       this.state.socket.emit('room', { room, user });
 
@@ -187,14 +215,15 @@ export default class MessageApp extends Component {
         // messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
         setter(messageCopy);
       });
+// -------------- Main event to update state for current user's in room -------------------------------------
 
-      this.state.socket.on('userWelcome', ({ newUser, connectedUsersList }) => {
-        this.setState({ roomsUsers: connectedUsersList });
-      });
+      // this.state.socket.on('userWelcome', ({ newUser, connectedUsersList }) => {
+      //   this.setState({ roomsUsers: connectedUsersList });
+      // });
 
-      this.state.socket.on('disconnection', (updatedList) => {
-        this.setState({ roomsUsers: updatedList.connectedUsersList });
-      })
+      // this.state.socket.on('disconnection', (updatedList) => {
+      //   this.setState({ roomsUsers: updatedList.connectedUsersList });
+      // })
 
     });
   }
@@ -219,9 +248,8 @@ export default class MessageApp extends Component {
           </Col>
           <Col className="messageAppCol" >
             <FriendsList
-              room={this.state.room || 'defaultRoom'}
-              user={this.state.user || 'Enter a Name Here'}
-              roomUsers={this.state.roomsUsers}
+              currentRoom={this.state.currentRoom}
+              // userObj={this.state.userObj}
             />
           </Col>
         </Row>
