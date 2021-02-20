@@ -48,9 +48,11 @@ export default class MessageApp extends Component {
     // axios request to get logged in user obj
     .then((res) => {
       let obj = res.data[0];
-      //Grabs the currentRoom
+      //  Grab currentRoom
+      // Grab messages from room
       return axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
         .then((res) => {
+          let messagesList = this.extractMessages(res.data);
           this.setState({
             currentRoom: res.data[0],
             userObj: obj,
@@ -58,7 +60,8 @@ export default class MessageApp extends Component {
             room: obj.rooms[0],
             chatRoomsList: obj.rooms,
             username: `${obj.first_name} ${obj.last_name}`,
-            userId: obj.user_id
+            userId: obj.user_id,
+            messages: messagesList
           })
           console.log(obj.rooms[0]);
         })
@@ -95,6 +98,28 @@ export default class MessageApp extends Component {
       .catch((err) => {
         console.error(err)
       })
+  }
+
+  extractMessages(data) {
+    var reggir = /^\{user_id:\s(.*),\sfirst_name:\s(.*),\slast_name:\s(.*),\sprofile_pic:\s(.*),\smessage:\s(.*),\stimestamp:\s(.*)\}$/;
+    let messagesList = [];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].messages.length === 0) continue;
+      //itère tous les messages et fait le check
+      for (let j = 0; j < data[i].messages.length; j++) {
+        const match = data[i].messages[j].match(reggir);
+        if (!match || match.length === 0) continue;
+        messagesList.push({
+          username: `${match[2]} ${match[3]}`,
+          profile_pic: `${match[4]}`,
+          message: `${match[5]}`,
+          time: `${match[6]}`
+        });
+        // TBNoted: SENDERS & TIMESTAMPS CAN BE FOUND IN THE MATCH ARRAY
+        // PLEASE USE FOR DISPLAYING MESSAGE SENDERS
+      }
+    }
+    return messagesList;
   }
   addRoom (requestedRoom) {
     document.getElementById('typedValue').value = '';
@@ -147,24 +172,7 @@ export default class MessageApp extends Component {
     return axios.get(`/slackreactor/rooms/${newRoom}`)
       .then((res) => {
         console.log('data :', res.data);
-        var reggir = /^\{user_id:\s(.*),\sfirst_name:\s(.*),\slast_name:\s(.*),\sprofile_pic:\s(.*),\smessage:\s(.*),\stimestamp:\s(.*)\}$/;
-        let messagesList = [];
-        for (let i = 0; i < res.data.length; i++) {
-          if (res.data[i].messages.length === 0) continue;
-          //itère tous les messages et fait le check
-          for (let j = 0; j < res.data[i].messages.length; j++) {
-            const match = res.data[i].messages[j].match(reggir);
-            if (!match || match.length === 0) continue;
-            messagesList.push({
-              username: `${match[2]} ${match[3]}`,
-              profile_pic: `${match[4]}`,
-              message: `${match[5]}`,
-              time: `${match[6]}`
-            });
-            // TBNoted: SENDERS & TIMESTAMPS CAN BE FOUND IN THE MATCH ARRAY
-            // PLEASE USE FOR DISPLAYING MESSAGE SENDERS
-          }
-        }
+        const messagesList = this.extractMessages(res.data);
         this.setState({
           currentRoom: res.data,
           room: newRoom,
@@ -234,7 +242,7 @@ export default class MessageApp extends Component {
           <Col className="messageAppCol" >
             <FriendsList
               currentRoom={this.state.currentRoom || 'broken'}
-              // userObj={this.state.userObj}
+              userObj={this.state.userObj}
             />
           </Col>
         </Row>
