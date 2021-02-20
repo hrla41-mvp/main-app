@@ -24,7 +24,7 @@ class FriendsList extends React.Component {
           {/* {(currentRoom.users) ? <RenderPeople currentRoom={currentRoom} /> : null} */}
 
           {/* PROFILE PICS STORES UP [{username, profile_pic}] FOR DISPLAYING PROFILE PICTURES*/}
-            {(currentRoom.users) ? <RenderPeople profilePics={this.props.profilePics} currentRoom={currentRoom} /> : null}
+            {(currentRoom.users) ? <RenderPeople usersPics={this.props.profilePics} currentRoom={currentRoom} /> : null}
           </div>
           <input type="text" placeholder="Type a username" className="EnterUsername"></input>
         </div>

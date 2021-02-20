@@ -64,6 +64,8 @@ export default function SignUp() {
           last_login: '10:00am',
           rooms: ['HEllO','ROOMID']
         })
+        // add a put request to add the new user to the default rooms.
+
       })
       .catch((error) => {
         console.log(error)

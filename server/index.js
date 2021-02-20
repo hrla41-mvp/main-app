@@ -74,14 +74,14 @@ app.get('/slackreactor/rooms/:room', async (req, res) => {
 //UPDATES A ROOM'S USERS
 app.put('/slackreactor/rooms/users:id', async (req, res) => {
   const roomToBeUpdated = req.params.id
-    try {
+  try {
 
-      const query = `UPDATE Rooms SET users = array_append(users, '${req.body}' WHERE user_id = '${itemToBeUpdated}'`
-      const dbQuery = await pool.query(query);
-      res.json(query.rows)
-    } catch (err) {
-      console.error(err.message)
-    }
+    const query = `UPDATE Rooms SET users = array_append(users, '${req.body}' WHERE user_id = '${itemToBeUpdated}'`
+    const dbQuery = await pool.query(query);
+    res.json(query.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
 });
 
 //ADDS NEW USER
@@ -141,7 +141,7 @@ app.put('/slackreactor/users/:id', async (req, res) => {
     }
   }
   //for all other user detail updates:
-   // TBN THIS METHOD OVERWRITES ALL OTHER DETAILS OF THE USER
+  // TBN THIS METHOD OVERWRITES ALL OTHER DETAILS OF THE USER
   try {
     const column = Object.keys(req.body)
 
@@ -181,15 +181,15 @@ app.get('/slackreactor/user/:id', async (req, res) => {
   }
 });
 
- //This function retrieves a specific room from the database
- const getRoom = (room) => {
+//This function retrieves a specific room from the database
+const getRoom = (room) => {
 
   const text = `SELECT * FROM Rooms WHERE room_name = '${room}'`
   const newPost = pool.query(query)
     .catch(err => (console.log(err)))
 }
 
-app.get('/slackreactor/rooms/:room', async (req, res)=> {
+app.get('/slackreactor/rooms/:room', async (req, res) => {
   try {
     const room = await pool.query(`SELECT * FROM Rooms WHERE room_name = '${req.params.room}'`);
     res.json(room.rows)
@@ -202,42 +202,62 @@ app.get('/slackreactor/rooms/:room', async (req, res)=> {
 app.put('/slackreactor/addRoomToUser/:id', (req, res) => {
   const query = `UPDATE Users SET rooms = array_append(rooms, '${req.body.rooms}') WHERE user_id = '${req.params.id}'`
   return pool.query(query)
-    .then((dbResponse)=> res.status(200).send(dbResponse))
+    .then((dbResponse) => res.status(200).send(dbResponse))
     .catch(err => res.status(404).send(err));
 });
 
-  //This function adds messages from a room into a database
-  const addMessageToRoom = (room, message) => {
+// ADD USER TO ROOM IN DB
+app.put('/slackreactor/addUserToRoom/:room_name', async (req, res) => {
+  const query = `UPDATE Rooms SET users = array_append(users, '${req.body.username}') WHERE room_name = '${req.params.room_name}' RETURNING room_name, messages, users, room_id`
+  //
+  return await pool.query(query)
+    .then((dbResponse) => res.status(200).send(dbResponse))
+    .catch(err => res.status(404).send(err));
+});
 
-    var final_string = message.message.replace(/[\/\(\)\']/g, "&apos;");
-    const text = `{user_id: ${message.user_id}, first_name: ${message.first_name}, last_name: ${message.last_name}, profile_pic: ${message.profile_pic}, message: ${final_string}, timestamp: ${message.timestamp}}`
-    const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_name = '${room}';`
-    const newPost = pool.query(query)
-      .catch(err => (console.log(err)))
+//RETRIEVES ALL OF THE USERS FOR A PARTICULAR ROOM
+app.get(`/slackreactor/roomUsers/:room`, async (req, res) => {
+  console.log(req.params)
+  try {
+    const product = await pool.query(`SELECT * FROM Users WHERE rooms && '{${req.params.room}}'::text[];`);
+    res.json(product.rows)
+  } catch (err) {
+    console.error(err.message)
   }
+});
 
-  // USE OF THIS FUNCTION IS DEPRECATED:
-  // THIS iS NOW HANDLED BY POST REQUEST ON FRONT END
-  const addRoomtoUser = (room, user_id) => {
-        const query = `UPDATE Users SET rooms = array_append(rooms, '${room}') WHERE user_id = '${user_id}'`
-        return pool.query(query)
-          .catch(err => console.log(err));
-  }
+//This function adds messages from a room into a database
+const addMessageToRoom = (room, message) => {
 
-  //this function adds rooms to a database
-  const addRoomtoDB = (roomName, username) => {
-    //if exists, and user is not within users, add user to room
-      //if exists, and user is in users, do nothing
-      //else create room
-      const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${roomName}', '{}', '{${username}}') ON CONFLICT (room_name) DO UPDATE SET users = array_append(Rooms.users, '${username}');`
+  var final_string = message.message.replace(/[\/\(\)\']/g, "&apos;");
+  const text = `{user_id: ${message.user_id}, first_name: ${message.first_name}, last_name: ${message.last_name}, profile_pic: ${message.profile_pic}, message: ${final_string}, timestamp: ${message.timestamp}}`
+  const query = `UPDATE Rooms SET messages = array_append(messages, '${text}') WHERE room_name = '${room}';`
+  const newPost = pool.query(query)
+    .catch(err => (console.log(err)))
+}
 
-      const dbQuery = pool.query(query)
-        .catch(err => (console.log(err)))
-  }
+// USE OF THIS FUNCTION IS DEPRECATED:
+// THIS iS NOW HANDLED BY POST REQUEST ON FRONT END
+const addRoomtoUser = (room, user_id) => {
+  const query = `UPDATE Users SET rooms = array_append(rooms, '${room}') WHERE user_id = '${user_id}'`
+  return pool.query(query)
+    .catch(err => console.log(err));
+}
 
-  //this function adds users to a room - to be implemented already on front end
+//this function adds rooms to a database
+const addRoomtoDB = (roomName, username) => {
+  //if exists, and user is not within users, add user to room
+  //if exists, and user is in users, do nothing
+  //else create room
+  const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${roomName}', '{}', '{${username}}') ON CONFLICT (room_name) DO UPDATE SET users = array_append(Rooms.users, '${username}');`
 
-  //this function adds friends to a user
+  const dbQuery = pool.query(query)
+    .catch(err => (console.log(err)))
+}
+
+//this function adds users to a room - to be implemented already on front end
+
+//this function adds friends to a user
 
 
 let roomRecords = {};

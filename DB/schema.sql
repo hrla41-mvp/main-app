@@ -6,10 +6,11 @@ CREATE TABLE Users(
   cohort VARCHAR(100) NOT NULL,
   staff BOOLEAN,
   friends TEXT[],
-  profile_pic VARCHAR(100) NOT NULL,
+  profile_pic VARCHAR(250) NOT NULL,
   last_login VARCHAR(100),
   rooms TEXT[]
 );
+-- let's try this
 -- DROP TYPE IF EXISTS Messages;
 -- CREATE TYPE Messages AS(
 --   created_on TIMESTAMP,
@@ -32,6 +33,13 @@ CREATE TABLE Rooms(
   messages TEXT[],
   users TEXT[]
 );
+
+
+-- insert into rooms (room_name) values ('HEllO');
+-- insert into rooms (room_name) values ('ROOMID');
+-- INSERT INTO ROOMS (room_name, messages, users) VALUES ('ROOMID', '{hello people}', '{bépo, auie}');
+-- INSERT INTO ROOMS (room_name, messages, users) VALUES ('ROOMID', '{hello people}', '{bépo, auie}');
+
 
 -- DROP TABLE IF EXISTS passwords;
 -- CREATE TABLE passwords(
