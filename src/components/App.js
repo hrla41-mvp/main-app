@@ -39,7 +39,7 @@ export default class App extends Component {
             this.setState({
               userFirstName: res.data[0].first_name
             })
-            console.log(res.data[0].first_name)
+            // console.log(res.data[0].first_name)
           })
 
       } else {
