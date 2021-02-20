@@ -68,11 +68,13 @@
 
 .aboutStatement {
   height: 60%;
+  padding-left: 2%;
 }
 
 .technologies {
   height: 20%;
   font-size: 3rem;
+  margin-left: 1% !important;
 }
 
 .technologiesTitle {
@@ -82,11 +84,16 @@
 }
 
 .techSVG {
-  margin-left: 2%;
+  /* padding-left: 15%; */
+  vertical-align: super;
 }
 
 @media only screen and (max-width: 900px) {
   .aboutStatement {
     font-size: 1.7rem;
   }
+}
+
+.svgStyle {
+  height: 10% !important;
 }

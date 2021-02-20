@@ -10,7 +10,7 @@ img {
   border-radius: 30px;
 }
 
-.Name {
+.peopleInRoomName {
   font-family: 'Oswald', sans-serif;
   font-weight: 300;
   width: 30rem;
@@ -21,16 +21,16 @@ img {
   color: white;
   margin-left: 0.5rem;
 }
-.Avatar {
+.peopleInRoomAvatar {
   padding-top: 2px;
 }
-.Avatar:hover {
+.peopleInRoomAvatar:hover {
   padding-top: 2px;
   transition: all 0.5s ease-in-out;
   cursor: pointer;
   transform: translateY(-5px);
 }
-.Name:hover {
+.peopleInRoomName:hover {
   color: black;
   background-color: #55dc9e;
   transition: all 0.5s ease-in-out;

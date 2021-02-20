@@ -18,10 +18,10 @@ const RenderPeople = ({currentRoom, usersPics}) => {
         ))}
       {/* {currentRoom.users.map(element => (
         <div className="PeopleBox" key={Math.random()}>
-          <div className="Avatar">
+          <div className="peopleInRoomAvatar">
             <img src={'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg'}></img>
           </div>
-          <div className="Name">{element}</div>
+          <div className="peopleInRoomName">{element}</div>
         </div>
       ))} */}
     </>

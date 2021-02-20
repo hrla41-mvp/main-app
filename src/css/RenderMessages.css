@@ -5,16 +5,58 @@ img {
 .messages {
   display: block;
   margin-left: 1rem;
+  /* background-color: grey;
+  border-radius: 6px; */
 }
 
 .otherMessage {
   background-color: rgb(74, 74, 74);
 }
 
+.myMessageRight {
+
+}
+
 .Message {
   width: fit-content;
-  background: green;
+  background: #55dc9e;
   border-radius: 6px;
   padding-left: 1rem;
   padding-right: 1rem;
+  font-size: 1.2rem;
+  color: black;
+  max-width: 80%;
+}
+
+.Avatar {
+  padding-top: 2px;
+  margin-bottom: 10px;
+}
+
+.profilePicture {
+  margin-right: 10px;
+}
+
+.Timestamp {
+  font-size: 12px;
+}
+
+.myMessage {
+  /* width: fit-content;
+  background: orange;
+  border-radius: 6px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 1.2rem;
+  color: black;
+  max-width: 80%; */
+  width: fit-content;
+  background: black;
+  border-radius: 6px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 1.2rem;
+  color: white;
+  max-width: 80%;
+  border: 1px solid white;
 }

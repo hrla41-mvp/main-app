@@ -30,6 +30,31 @@ class MessageBoard extends React.Component {
   }
 
   render() {
+    let fullName = `${this.props.user.user.first_name} ${this.props.user.user.last_name}`;
+    return (
+      <div className="MessageBoardContainer" id="MessageBoardContainer">
+        <div>
+          <h1 className="roomName">{this.props.user.room}</h1>
+        </div>
+        <div className="messagesHolder">
+          {this.props.user.messages.map(element => (
+            <RenderMessages fullName={fullName} messages={element} key={Math.random()} />
+          ))}
+        </div>
+        <div>
+            <input className="newMessageInput" type="text" placeholder="Whats on your mind?"
+            onChange={this.handleInput}
+            onKeyPress={this.handleSendMessage}
+            />
+        </div>
+      </div>
+    )
+  }
+}
+export default MessageBoard;
+
+/*
+  render() {
     return (
       <div className="MessageBoardContainer">
         <div>
@@ -49,7 +74,5 @@ class MessageBoard extends React.Component {
       </div>
     )
   }
-}
-export default MessageBoard;
-
+*/
 

@@ -2,6 +2,7 @@
   color: white;
   height: 100%;
   overflow: auto;
+  overflow-x: hidden;
 }
 
 .newMessageInput{
@@ -19,6 +20,17 @@
   font-family: 'Oswald', sans-serif;
   font-weight: 500;
   text-align: center;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  background: black;
+  /* filter: drop-shadow(7px 3px 10px #252424); */
+  box-shadow: 0 4px 9px -2px grey;
+}
+
+.messagesHolder {
+  margin-top: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .MessageBoardContainer::-webkit-scrollbar {
@@ -26,7 +38,7 @@
 }
 
 .MessageBoardContainer::-webkit-scrollbar-thumb {
-  background: rgb(0, 0, 0);
+  background: black;
   border-radius: 10px;
 }
 /* .MessageBoardContainer::-webkit-scrollbar {

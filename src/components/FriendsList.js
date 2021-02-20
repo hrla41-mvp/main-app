@@ -11,11 +11,13 @@ class FriendsList extends React.Component {
   }
   render() {
     let currentRoom = this.props.currentRoom;
-    var messageBody = document.getElementsByClassName('MessageBoardContainer');
-    if (messageBody[0] === undefined) {
-    } else {
-      messageBody[0].scrollTop = messageBody[0].scrollHeight;
-    }
+    setTimeout(() => {
+      var messageBody = document.getElementsByClassName('MessageBoardContainer');
+      if (messageBody[0] === undefined) {
+      } else {
+        messageBody[0].scrollTop = messageBody[0].scrollHeight - messageBody[0].clientHeight;
+      }
+    }, 1000)
     return (
       <>
         <div className="FriendsList">
