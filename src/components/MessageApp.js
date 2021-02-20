@@ -10,6 +10,35 @@ import firebase from '../Firebase';
 
 const SERVER = 'localhost:3000';
 
+/*
+    on mount, use firebase function to get firebaseid
+      firebase.auth()
+    query the database with the firebase id to get the specfic users obj
+      this.getUserInfo(uid)
+    in the user obj, there is a rooms array
+    The defualt state of current room will be set to the first room
+      user {
+        id
+        name
+        rooms: ['rsa', 'auierst', 'auierst'];
+      }
+
+      --> axios request for room details.
+        this.updateCurrentRoom ( this.state.user.rooms[0] );
+      --> this.state.currentRoom = rooms[0] = 'testRoom'
+    update current room on based on what chatroom was clicked
+*/
+
+// upon updating state, current room should be set to user.rooms[0]
+//  onClick => swap currentRoom to clicked Room
+// axios get request to rooms table
+// retrieve all details from currentRoom
+// update this.
+
+
+
+
+
 export default class MessageApp extends Component {
   constructor(props) {
     super(props)
@@ -21,9 +50,9 @@ export default class MessageApp extends Component {
       roomsUsers: [],
       room: 'Bedroom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
-      user: 'dubz', // <-------- MUST BE AN OBJECT
-      username: '',
-      userObj: {}
+      userObj: {},
+      user: {}, ///<----- {}
+      username: ''
     }
 
     /*
@@ -39,6 +68,7 @@ export default class MessageApp extends Component {
     this.getRooms = this.getRooms.bind(this);
     this.addRoom = this.addRoom.bind(this);
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
+    this.updateCurrentRoomOnLoad = this.updateCurrentRoomOnLoad.bind(this)
   }
 
   componentDidMount() {
@@ -50,6 +80,8 @@ export default class MessageApp extends Component {
       }
     });
   }
+
+
 
   //this function retrieves the user id from the firebase DB and loads the user's details from the DB
 
@@ -87,6 +119,18 @@ export default class MessageApp extends Component {
     .then(() => {
       this.configureSocket()
     })
+  }
+
+  updateCurrentRoomOnLoad(roomName) {
+    axios.get(`/slackreactor/rooms/${roomName}`)
+      .then((res) => {
+        let room = res.data[0];
+        this.setState({ currentRoom: room });
+      })
+    .then(()=> {
+      console.log(this.state.currentRoom)
+      console.log(this.state.room);
+      });
   }
 
   getRooms() {
@@ -137,7 +181,7 @@ export default class MessageApp extends Component {
     if (newRoom === this.state.room) return;
     this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
     this.setState({ room: newRoom });
-    // Call axios get requests to made update to state
+    this.updateCurrentRoomOnLoad (newRoom);
   }
 
   configureSocket(data) {
