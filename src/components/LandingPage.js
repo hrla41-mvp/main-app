@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
-import '../css/Landingpage.css';
+import '../css/LandingPage.css';
 import React, { useState, useEffect, useRef } from 'react'
 import BIRDS from 'vanta/dist/vanta.birds.min';
 

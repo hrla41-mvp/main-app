@@ -157,7 +157,6 @@ app.get(/\/(SignUp|MessageApp|Login)/, (req, res) => {
 //RETRIEVES A SPECIFIC USER
 app.get('/slackreactor/user/:id', async (req, res) => {
   try {
-    console.log('userId ', req.params)
     const product = await pool.query(`SELECT * FROM Users WHERE user_id = '${req.params.id}'`);
     res.json(product.rows)
   } catch (err) {
@@ -172,6 +171,15 @@ app.get('/slackreactor/user/:id', async (req, res) => {
   const newPost = pool.query(query)
     .catch(err => (console.log(err)))
 }
+
+app.get('/slackreactor/rooms/:room', async (req, res)=> {
+  try {
+    const room = await pool.query(`SELECT * FROM Rooms WHERE room_name = '${req.params.room}'`);
+    res.json(room.rows)
+  } catch (err) {
+    console.error(err.message)
+  }
+})
 
   //This function adds messages from a room into a database
   const addMessageToRoom = (room, message) => {

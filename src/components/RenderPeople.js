@@ -12,7 +12,7 @@ const RenderPeople = ({userName, roomUsers}) => {
       </div> */}
 
         {roomUsers.map(element=> (
-          <div className="PeopleBox" key={element.id}>
+          <div className="PeopleBox" key={element.id || Math.random()}>
             <div className="Avatar"><img src={element.img ||'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg'}></img></div>
             <div className="Name">{element.user}</div>
           </div>
