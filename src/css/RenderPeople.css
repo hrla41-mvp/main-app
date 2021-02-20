@@ -11,20 +11,28 @@ img {
 }
 
 .Name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
   width: 30rem;
   text-align: center;
   padding-top: 7px;
   border-radius: 5px;
   background-color: rgb(27, 27, 27);
   color: white;
+  margin-left: 0.5rem;
 }
 .Avatar {
   padding-top: 2px;
 }
-
-.PeopleBox :hover {
-  color: rgb(0, 0, 0);
-  background-color: #2e2e2e;
+.Avatar:hover {
+  padding-top: 2px;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  transform: translateY(-5px);
+}
+.Name:hover {
+  color: black;
+  background-color: #55dc9e;
   transition: all 0.5s ease-in-out;
   cursor: pointer;
   transform: translateY(-5px);

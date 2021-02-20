@@ -34,6 +34,10 @@ export default function SignUp() {
       console.log(e.target.checked)
     } else if (e.target.name === 'profilePic') {
       setProfilePic(e.target.value);
+    } else if (e.target.name === 'profilePic') {
+      setProfilePic(e.target.value);
+    } else {
+      console.log(e.target.value)
     }
   }
 
@@ -114,33 +118,16 @@ export default function SignUp() {
             </Col>
             <Col xs="" className="">
               <div className="profilePicString">Profile Picture: </div>
-              {/* <input type="file" id="file" className="custom-file-input" style={{marginLeft: '20%'}} /> */}
               <label htmlFor="upload-photo" className="text-center uploadLabel">Browse Files</label>
               <input type="file" name="photo" id="upload-photo" />
-              {/* <Form.File name="profilePic" onChange={handleFormInput} className="" id="exampleFormControlFile1" style={{marginLeft: '20%'}}/> */}
             </Col>
             <Col xs="" className="mt-3 text-right">
-            {/* <label className="checkboxContain">HR Staff Member?
-              <input type="checkbox" onChange={handleFormInput} />
-            </label> */}
-            {/* <label className="container">One
-              <input type="checkbox" />
-              <span className="checkmark"></span>
-            </label> */}
-            <div style={{display: 'block', textAlign: 'right'}}>HR Staff Member?</div>
-            <div class="container">
-              <div class="round">
-
-                <input type="checkbox" id="checkbox" />
-                <label for="checkbox"></label>
-              </div>
-            </div>
-              {/* <Form.Check name="staff" onChange={handleFormInput}
+              <Form.Check name="staff" onChange={handleFormInput}
                 type="checkbox"
                 id="customControlAutosizing"
                 label="HR Staff Member?"
                 custom
-              /> */}
+              />
             </Col>
           </Form.Row>
           <Form.Text className="text-muted mt-3">

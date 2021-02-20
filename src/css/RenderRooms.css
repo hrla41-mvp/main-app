@@ -1,19 +1,26 @@
 .RoomsCard {
+  font-family: 'Oswald', sans-serif;
   margin-bottom: 0rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   text-align: center;
   align-items: center;
   font-size: 1.5rem;
-  /* border: 1px solid black;
-  border-radius: 50px; */
+  background: #55dc9e;
+  border-radius: 17px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-weight: 300;
 }
 
 .RoomsCard :hover {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
   color: rgb(0, 0, 0);
-  background-color: #2e2e2e;
-  transition: all 0.5s ease-in-out;
+  border-radius: 17px;
+  background-color: #acf7d4;
+  /* transition: all 0.5s ease-in-out; */
   cursor: pointer;
-  transform: translateY(-5px);
+  /* transform: translateY(-5px); */
 }
 
 .RoomsName {

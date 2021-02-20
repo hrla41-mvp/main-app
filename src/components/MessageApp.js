@@ -240,7 +240,7 @@ export default class MessageApp extends Component {
               user={this.state.user}
             />
           </Col>
-          <Col className="messageAppCol" xs={6}>
+          <Col className="messageAppCol" xs={8}>
             <MessageBoard
               sendMessage={this.sendMessage}
               user={this.state}

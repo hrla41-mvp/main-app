@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import { Button, Form, Navbar, Nav, Container } from 'react-bootstrap';
+import { Button, Form, Navbar, Nav, Container, Dropdown } from 'react-bootstrap';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import firebase from '../Firebase';
 import '../css/App.css';
@@ -14,7 +14,8 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userIsSignedIn: false
+      userIsSignedIn: false,
+      userFirstName: '',
     }
     this.logOut = this.logOut.bind(this);
   }
@@ -23,15 +24,23 @@ export default class App extends Component {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         var uid = user.uid;
-        console.log(`${user.uid} has logged in`)
+        console.log(`${uid} has logged in`)
         this.setState({
-          userIsSignedIn: true
+          userIsSignedIn: true,
         })
 
         if (window.location.href === 'http://localhost:3000/Login' ||
         window.location.href === 'http://localhost:3000/SignUp'){
           window.location.href = "/MessageApp";
         }
+
+        Axios.get(`/slackreactor/user/${uid}`)
+          .then((res) => {
+            this.setState({
+              userFirstName: res.data[0].first_name
+            })
+            console.log(res.data[0].first_name)
+          })
 
       } else {
         // User is signed out
@@ -68,7 +77,15 @@ export default class App extends Component {
           <Nav.Link className="navLink" href="/MessageApp">MessageApp</Nav.Link>
         </Nav>
         <Form inline>
-          <Button variant="light" onClick={this.logOut}>Log Out</Button>
+          {/* <Button variant="light" onClick={this.logOut}>Log Out</Button> */}
+          <Dropdown>
+            <Dropdown.Toggle style={{background: '#55dc9e', color: 'black', border: '1px solid #55dc9e', minWidth: '150px', marginRight: '20px', textAlign: 'center', borderRadius: '10px'}} className="dropdownMenu" id="dropdown-basic">
+              {`Hello ${this.state.userFirstName}`}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Form>
       </Navbar>
     } else {
