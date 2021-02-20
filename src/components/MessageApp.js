@@ -10,35 +10,6 @@ import firebase from '../Firebase';
 
 const SERVER = 'localhost:3000';
 
-/*
-    on mount, use firebase function to get firebaseid
-      firebase.auth()
-    query the database with the firebase id to get the specfic users obj
-      this.getUserInfo(uid)
-    in the user obj, there is a rooms array
-    The defualt state of current room will be set to the first room
-      user {
-        id
-        name
-        rooms: ['rsa', 'auierst', 'auierst'];
-      }
-
-      --> axios request for room details.
-        this.updateCurrentRoom ( this.state.user.rooms[0] );
-      --> this.state.currentRoom = rooms[0] = 'testRoom'
-    update current room on based on what chatroom was clicked
-*/
-
-// upon updating state, current room should be set to user.rooms[0]
-//  onClick => swap currentRoom to clicked Room
-// axios get request to rooms table
-// retrieve all details from currentRoom
-// update this.
-
-
-
-
-
 export default class MessageApp extends Component {
   constructor(props) {
     super(props)
@@ -48,21 +19,14 @@ export default class MessageApp extends Component {
       messages: [],
       message: '',
       roomsUsers: [],
+      profilePics: [],
       room: 'Bedroom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
       userObj: {},
       user: {}, ///<----- {}
-      username: ''
+      username: '',
     }
 
-    /*
-    on mount use firebase function to get firebase
-    query the database with the firebase id to get the specfic users obj
-    in the user obj, there is a rooms array
-    The defualt state of current room will be set to the first room
-    update current room on based on what chatroom was clicked
-
-  */
     this.sendMessage = this.sendMessage.bind(this);
     this.configureSocket = this.configureSocket.bind(this);
     this.getRooms = this.getRooms.bind(this);
@@ -70,7 +34,6 @@ export default class MessageApp extends Component {
     this.updateCurrentRoom = this.updateCurrentRoom.bind(this)
     this.updateCurrentRoomOnLoad = this.updateCurrentRoomOnLoad.bind(this)
   }
-
   componentDidMount() {
     // this.configureSocket();
     firebase.auth().onAuthStateChanged((user) => {
@@ -81,18 +44,16 @@ export default class MessageApp extends Component {
     });
   }
 
-
-
-  //this function retrieves the user id from the firebase DB and loads the user's details from the DB
   getUserInfo(user) {
-    axios.get(`/slackreactor/user/${user}`)
+    return axios.get(`/slackreactor/user/${user}`)
     // axios request to get logged in user obj
     .then((res) => {
       let obj = res.data[0];
-      //Grabs the currentRoom
-      axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
+      //  Grab currentRoom
+      // Grab messages from room
+      return axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
         .then((res) => {
-          console.log(res.data[0])
+          let {messagesList, profilePics} = this.extractMessages(res.data);
           this.setState({
             currentRoom: res.data[0],
             userObj: obj,
@@ -100,8 +61,11 @@ export default class MessageApp extends Component {
             room: obj.rooms[0],
             chatRoomsList: obj.rooms,
             username: `${obj.first_name} ${obj.last_name}`,
-            userId: obj.user_id
+            userId: obj.user_id,
+            messages: messagesList,
+            profilePics: profilePics
           })
+          console.log(this.state.messages);
         })
     })
     .then(() => {
@@ -110,24 +74,21 @@ export default class MessageApp extends Component {
   }
 
   updateCurrentRoomOnLoad(roomName) {
-    console.log(roomName)
-    axios.get(`/slackreactor/rooms/${roomName}`)
+    return axios.get(`/slackreactor/rooms/${roomName}`)
       .then((res) => {
         let room = res.data[0];
-        console.log(room)
         this.setState({ currentRoom: room });
       })
-    // .then(()=> {
-    //   console.log(this.state.currentRoom)
-    //   console.log(this.state.room);
-    //   });
+    .then(()=> {
+      console.log(this.state.currentRoom)
+      console.log(this.state.room);
+      });
   }
-
   getRooms() {
     // newArray was set to copy initial chatRoomsList
     // to temporarily help debugging
     let newArray = [...this.state.chatRoomsList];
-    axios.get('/slackreactor/rooms')
+    return axios.get('/slackreactor/rooms')
       .then((response) => {
         response.data.map(item => (
           newArray.push(item.room_name)
@@ -141,20 +102,71 @@ export default class MessageApp extends Component {
       })
   }
 
-  addRoom(room) {
-      if (room === this.state.room) return;
-      this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: room, username: this.state.username, user_id: this.state.user.user_id });
-      document.getElementById('typedValue').value = '';
-      this.setState({ room: room, chatRoomsList: this.state.chatRoomsList.push(room)});
-      axios.post('/slackreactor/rooms', {
-        room_name: room,
-        users:`${this.state.user.first_name} ${this.state.user.last_name}`,
+  extractMessages(data) {
+    var reggir = /^\{user_id:\s(.*),\sfirst_name:\s(.*),\slast_name:\s(.*),\sprofile_pic:\s(.*),\smessage:\s(.*),\stimestamp:\s(.*)\}$/;
+    let messagesList = [];
+    let usersPics = [];
+    let usersNames = [];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].messages.length === 0) continue;
+      for (let j = 0; j < data[i].messages.length; j++) {
+        //{username, pictures}
+        const match = data[i].messages[j].match(reggir);
+        if (!match || match.length === 0) continue;
+        if (!usersNames.includes(`${match[2]} ${match[3]}`)) {
+          usersPics.push({
+            username: `${match[2]} ${match[3]}`,
+            profile_pic: `${match[5]}`
+          })
+          usersNames.push(`${match[2]} ${match[3]}`);
+        }
+        messagesList.push({
+          username: `${match[2]} ${match[3]}`,
+          profile_pic: `${match[4]}`,
+          message: `${match[5]}`,
+          time: `${match[6]}`
+        });
+        // TBNoted: SENDERS & TIMESTAMPS CAN BE FOUND IN THE MATCH ARRAY
+        // PLEASE USE FOR DISPLAYING MESSAGE SENDERS
+      }
+    }
+    return { messagesList, usersPics };
+  }
+  addRoom (requestedRoom) {
+    document.getElementById('typedValue').value = '';
+    if (requestedRoom === this.state.currentRoom.room_name) return;
+    return axios.get(`/slackreactor/rooms/${requestedRoom}`)
+    .then((res)=> {
+      if (res.data.length===0){
+        axios.put(`/slackreactor/addRoomToUser/${this.state.userObj.user_id}`, { rooms: requestedRoom });
+        return axios.post('/slackreactor/rooms', {
+          room_name: requestedRoom,
+          users: `${this.state.user.first_name} ${this.state.user.last_name}`
+        }).then((response) => (response.data));
+      } else return res.data;
+    })
+    .then((data)=> {
+      console.log(data);
+      let details = data[0];
+      let usrObjCpy = { ...this.state.userObj };
+      usrObjCpy.rooms.push(data[0].room_name);
+      this.setState({
+        room: details.room_name,
+        chatRoomsList: [...this.state.chatRoomsList, details.room_name],
+        currentRoom: details,
+        userObj: usrObjCpy
+      });
+      this.state.socket.emit('swapRoom', {
+        oldRoom: this.state.currentRoom.room_name,
+        newRoom: details.room_name,
+        username: this.state.username,
+        user_id: this.state.user.user_id
       })
+    })
   }
 
   sendMessage (room, message) {
     let user = this.state.user;
-
     let chatMessage = {
       user_id: user.user_id,
       first_name: user.first_name,
@@ -165,20 +177,30 @@ export default class MessageApp extends Component {
     }
       this.state.socket.emit('message', { room: room, message: chatMessage });
   }
-
   updateCurrentRoom(e) {
     let newRoom = e.target.innerHTML;
     if (newRoom === this.state.room) return;
-    this.state.socket.emit('swapRoom', { oldRoom: this.state.room, newRoom: newRoom });
-    this.setState({ room: newRoom });
-    this.updateCurrentRoomOnLoad (newRoom);
+    return axios.get(`/slackreactor/rooms/${newRoom}`)
+      .then((res) => {
+        console.log('data :', res.data);
+        const {messagesList, usersPics} = this.extractMessages(res.data);
+        this.setState({
+          currentRoom: res.data[0],
+          room: newRoom,
+          messages: messagesList,
+          usersPics: usersPics
+        });
+        this.state.socket.emit('swapRoom', {
+          oldRoom: this.state.room,
+          newRoom: newRoom
+        });
+      })
+      .catch(err => console.log(err));
   }
-
   configureSocket(data) {
     this.setState({
       socket: io(SERVER, {transports: ["websocket", "polling"]})
     })
-
     let room = this.state.room;
     let user = this.state.user;
     let messages = this.state.messages;
@@ -188,12 +210,9 @@ export default class MessageApp extends Component {
     }
     setter.bind(this);
     // console.log('its coming here')
-
     this.state.socket.on('connect', () => {
     // console.log('its connected')
-
       this.state.socket.emit('room', { room, user });
-
       this.state.socket.on('message', function (msg) {
         let messageCopy = messages
         messageCopy.push({
@@ -206,18 +225,14 @@ export default class MessageApp extends Component {
         setter(messageCopy);
       });
 // -------------- Main event to update state for current user's in room -------------------------------------
-
       // this.state.socket.on('userWelcome', ({ newUser, connectedUsersList }) => {
       //   this.setState({ roomsUsers: connectedUsersList });
       // });
-
       // this.state.socket.on('disconnection', (updatedList) => {
       //   this.setState({ roomsUsers: updatedList.connectedUsersList });
       // })
-
     });
   }
-
   render() {
     return (
       <Container fluid className="messageAppContainer">
@@ -238,8 +253,9 @@ export default class MessageApp extends Component {
           </Col>
           <Col className="messageAppCol" >
             <FriendsList
-              currentRoom={this.state.currentRoom}
+              currentRoom={this.state.currentRoom || 'broken'}
               // userObj={this.state.userObj}
+              profilePics={this.state.profilePics}
             />
           </Col>
         </Row>

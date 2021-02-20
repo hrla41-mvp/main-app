@@ -17,9 +17,9 @@ app.post('/slackreactor/rooms', async (req, res) => {
   try {
     const { room_name, users } = req.body;
     var room = room_name.replace(/[\/\(\)\']/g, "&apos;");
-    const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${room}', '{}', '{${users}}');`
+    const query = `INSERT INTO Rooms (room_name, messages, users) VALUES('${room}', '{}', '{${users}}') RETURNING room_name, messages, users, room_id;`
     const newMessage = await pool.query(query);
-    res.json(query.rows)
+    res.json(newMessage.rows)
   } catch (err) {
     console.error(err.message)
   }
@@ -51,7 +51,7 @@ app.put('/slackreactor/rooms/messages:id', async (req, res) => {
 //GETS ALL ROOMS
 app.get('/slackreactor/rooms', async (req, res) => {
   try {
-    const product = await pool.query(`SELECT * FROM Rooms LIMIT 10`);
+    const product = await pool.query(`SELECT * FROM Rooms`);
     let returner = JSON.stringify(product.rows).replace(/(&apos;)/g, "'");
     res.json(JSON.parse(returner));
   } catch (err) {
@@ -113,6 +113,7 @@ app.post('/slackreactor/users', async (req, res) => {
 app.put('/slackreactor/users/:id', async (req, res) => {
   const itemToBeUpdated = req.params.id
   //if updating a user's rooms:
+  // TBN THIS METHOD OVERWRITES ALL PREVIOUSLY RECORDED ROOMS OF THE USER
   if (req.body.rooms) {
     try {
       const body = JSON.stringify(req.body.rooms)
@@ -126,6 +127,7 @@ app.put('/slackreactor/users/:id', async (req, res) => {
     }
   }
   //if updating a user's friends:
+  // TBN THIS METHOD OVERWRITES ALL PREVIOUSLY RECORDED FRIENDS OF THE USER
   if (req.body.friends) {
     try {
       const body = JSON.stringify(req.body.friends)
@@ -139,6 +141,7 @@ app.put('/slackreactor/users/:id', async (req, res) => {
     }
   }
   //for all other user detail updates:
+   // TBN THIS METHOD OVERWRITES ALL OTHER DETAILS OF THE USER
   try {
     const column = Object.keys(req.body)
 
@@ -149,6 +152,8 @@ app.put('/slackreactor/users/:id', async (req, res) => {
     console.error(err.message)
   }
 });
+
+
 
 //RETRIEVES ALL USERS
 app.get('/slackreactor/users', async (req, res) => {
@@ -193,6 +198,14 @@ app.get('/slackreactor/rooms/:room', async (req, res)=> {
   }
 })
 
+// ADD ROOM TO USER IN DB
+app.put('/slackreactor/addRoomToUser/:id', (req, res) => {
+  const query = `UPDATE Users SET rooms = array_append(rooms, '${req.body.rooms}') WHERE user_id = '${req.params.id}'`
+  return pool.query(query)
+    .then((dbResponse)=> res.status(200).send(dbResponse))
+    .catch(err => res.status(404).send(err));
+});
+
   //This function adds messages from a room into a database
   const addMessageToRoom = (room, message) => {
 
@@ -205,7 +218,7 @@ app.get('/slackreactor/rooms/:room', async (req, res)=> {
 
   const addRoomtoUser = (room, user_id) => {
         const query = `UPDATE Users SET rooms = array_append(rooms, '${room}') WHERE user_id = '${user_id}'`
-        const dbQuery = pool.query(query)
+        return pool.query(query)
           .catch(err => console.log(err));
   }
 
@@ -256,7 +269,6 @@ io.on('connection', (socket) => {
         // connectedUsersList: formatToSend(roomRecords[room])
         connectedUsersList: Object.values(roomRecords[room])
       });
-    console.log(Object.values(roomRecords[room]));
     socket.room = room;
     socket.nickname = user;
   }
@@ -274,7 +286,6 @@ io.on('connection', (socket) => {
 
   socket.on('message', ({ room, message }) => {
     io.to(room).emit('message', message);
-    console.log(message.message)
     addMessageToRoom(room, message);
   });
 
@@ -286,7 +297,6 @@ io.on('connection', (socket) => {
   socket.on('swapRoom', ({ oldRoom, newRoom, username, user_id }) => {
     leaveRoom(oldRoom);
     joinRoom(newRoom, socket.nickname);
-    addRoomtoUser(newRoom, user_id);
   });
 
 });

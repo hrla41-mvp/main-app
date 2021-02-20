@@ -7,26 +7,27 @@ class FriendsList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-
     }
   }
-  render () {
+  render() {
     let currentRoom = this.props.currentRoom;
-
     var messageBody = document.getElementsByClassName('MessageBoardContainer');
     if (messageBody[0] === undefined) {
     } else {
       messageBody[0].scrollTop = messageBody[0].scrollHeight;
     }
-    return(
+    return (
       <>
-      <div className="FriendsList">
-        {/* <div className="RoomNameCard">{currentRoom.room_name}</div> */}
-        <div className="PeopleInRoom">People In The Room
-          {(currentRoom.users) ? <RenderPeople currentRoom={currentRoom} /> : null}
+        <div className="FriendsList">
+          <div className="RoomNameCard">{currentRoom.room_name}</div>
+          <div className="PeopleInRoom">People In The Room
+          {/* {(currentRoom.users) ? <RenderPeople currentRoom={currentRoom} /> : null} */}
+
+          {/* PROFILE PICS STORES UP [{username, profile_pic}] FOR DISPLAYING PROFILE PICTURES*/}
+            {(currentRoom.users) ? <RenderPeople profilePics={this.props.profilePics} currentRoom={currentRoom} /> : null}
+          </div>
+          <input type="text" placeholder="Type a username" className="EnterUsername"></input>
         </div>
-        <input type="text" placeholder="Type a username" className="EnterUsername"></input>
-      </div>
       </>
     )
   }
