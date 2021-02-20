@@ -51,21 +51,24 @@ export default class MessageApp extends Component {
       let obj = res.data[0];
       //  Grab currentRoom
       // Grab messages from room
+      // grab users from room
       return axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
         .then((res) => {
-          let {messagesList, profilePics} = this.extractMessages(res.data);
-          this.setState({
-            currentRoom: res.data[0],
-            userObj: obj,
-            user: obj,
-            room: obj.rooms[0],
-            chatRoomsList: obj.rooms,
-            username: `${obj.first_name} ${obj.last_name}`,
-            userId: obj.user_id,
-            messages: messagesList,
-            profilePics: profilePics
+          return axios.get(`/slackreactor/roomUsers/${res.data[0].room_name}`)
+          .then((response) => {
+            let { messagesList } = this.extractMessages(res.data);
+            this.setState({
+              currentRoom: res.data[0],
+              userObj: obj,
+              user: obj,
+              room: obj.rooms[0],
+              chatRoomsList: obj.rooms,
+              username: `${obj.first_name} ${obj.last_name}`,
+              userId: obj.user_id,
+              messages: messagesList,
+              profilePics: response.data
+            })
           })
-          console.log(this.state.messages);
         })
     })
     .then(() => {
@@ -134,66 +137,87 @@ export default class MessageApp extends Component {
   }
   addRoom (requestedRoom) {
     document.getElementById('typedValue').value = '';
+    // if the room doesn't exist => create room, add user to room, add room to user
+    // if the room does exist but doesn't include current user => add him.
+    // if the room does exist && includes current user=> load everything
     if (requestedRoom === this.state.currentRoom.room_name) return;
     return axios.get(`/slackreactor/rooms/${requestedRoom}`)
     .then((res)=> {
       if (res.data.length===0){
+        /// add room to user
         axios.put(`/slackreactor/addRoomToUser/${this.state.userObj.user_id}`, { rooms: requestedRoom });
         return axios.post('/slackreactor/rooms', {
           room_name: requestedRoom,
           users: `${this.state.user.first_name} ${this.state.user.last_name}`
         }).then((response) => (response.data));
+      } else if (!res.data[0].users.includes(this.state.username)) {
+        // add uset to room
+        return axios.put(`/slackreactor/addUserToRoom/${requestedRoom}`, {
+          username: `${this.state.user.first_name} ${this.state.user.last_name}`
+        }).then((response)=> (response.data.rows));
       } else return res.data;
     })
     .then((data)=> {
-      console.log(data);
-      let details = data[0];
-      let usrObjCpy = { ...this.state.userObj };
-      usrObjCpy.rooms.push(data[0].room_name);
-      this.setState({
-        room: details.room_name,
-        chatRoomsList: [...this.state.chatRoomsList, details.room_name],
-        currentRoom: details,
-        userObj: usrObjCpy
-      });
-      this.state.socket.emit('swapRoom', {
-        oldRoom: this.state.currentRoom.room_name,
-        newRoom: details.room_name,
-        username: this.state.username,
-        user_id: this.state.user.user_id
+      return axios.get(`/slackreactor/roomUsers/${data[0].room_name}`)
+      .then((response)=> {
+        let details = data[0];
+        let usrObjCpy = { ...this.state.userObj };
+        usrObjCpy.rooms.push(details.room_name);
+        const { messagesList } = this.extractMessages([details]);
+        this.setState({
+          currentRoom: details,
+          room: details.room_name,
+          userObj: usrObjCpy,
+          roomsUsers: data[0].users,
+          messages: messagesList,
+          profilePics: response.data,
+          chatRoomsList: [...this.state.chatRoomsList, details.room_name],
+        });
+        this.state.socket.emit('swapRoom', {
+          oldRoom: this.state.currentRoom.room_name,
+          newRoom: details.room_name,
+          username: this.state.username,
+          user_id: this.state.user.user_id
+        })
       })
     })
   }
 
   sendMessage (room, message) {
-    let user = this.state.user;
+    let userObj = this.state.userObj;
     let chatMessage = {
-      user_id: user.user_id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      profile_pic: user.profile_pic,
+      user_id: userObj.user_id,
+      first_name: userObj.first_name,
+      last_name: userObj.last_name,
+      username: `${userObj.first_name} ${userObj.last_name}`,
+      profile_pic: userObj.profile_pic,
       message: message,
-      timestamp: Date.now()
+      time: Date.now()
     }
       this.state.socket.emit('message', { room: room, message: chatMessage });
   }
   updateCurrentRoom(e) {
     let newRoom = e.target.innerHTML;
     if (newRoom === this.state.room) return;
-    return axios.get(`/slackreactor/rooms/${newRoom}`)
-      .then((res) => {
-        console.log('data :', res.data);
-        const {messagesList, usersPics} = this.extractMessages(res.data);
-        this.setState({
-          currentRoom: res.data[0],
-          room: newRoom,
-          messages: messagesList,
-          usersPics: usersPics
-        });
-        this.state.socket.emit('swapRoom', {
-          oldRoom: this.state.room,
-          newRoom: newRoom
-        });
+    return axios.get(`/slackreactor/rooms/${newRoom}`).then(res => res.data)
+      .then((data) => {
+        return axios.get(`/slackreactor/roomUsers/${data[0].room_name}`)
+          .then((response) => {
+            const { messagesList } = this.extractMessages(data);
+            console.log('data from update :', data);
+            console.log('messageslist: ', messagesList);
+            this.setState({
+              currentRoom: data[0],
+              room: data[0].room_name,
+              roomsUsers: data[0].users,
+              messages: messagesList,
+              profilePics: response.data,
+            });
+            this.state.socket.emit('swapRoom', {
+              oldRoom: this.state.room,
+              newRoom: data[0].room_name
+            });
+          })
       })
       .catch(err => console.log(err));
   }
@@ -201,25 +225,26 @@ export default class MessageApp extends Component {
     this.setState({
       socket: io(SERVER, {transports: ["websocket", "polling"]})
     })
-    let room = this.state.room;
-    let user = this.state.user;
-    let messages = this.state.messages;
+    let room = () => this.state.room;
+    let user = () => this.state.user;
+    let messages = () => this.state.messages;
     this.setState.bind(this);
     let setter = (messageCopy) => {
       this.setState({ messages: messageCopy })
     }
     setter.bind(this);
-    // console.log('its coming here')
     this.state.socket.on('connect', () => {
-    // console.log('its connected')
-      this.state.socket.emit('room', { room, user });
-      this.state.socket.on('message', function (msg) {
-        let messageCopy = messages
+      this.state.socket.emit('room', { room: room(), user: user() });
+      this.state.socket.on('message', (msg) => {
+        let messageCopy = [...messages()];
         messageCopy.push({
           message: msg.message,
-          avatar: msg.profile_pic,
-          msgname: `${msg.first_name} ${msg.last_name}`,
-          timestamp: msg.timestamp
+          profile_pic: msg.profile_pic,
+          username: `${msg.username}`,
+          first_name: msg.first_name,
+          last_name: msg.last_name,
+          time: msg.time,
+          user_id: msg.user_id
         })
         // messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
         setter(messageCopy);
