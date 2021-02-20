@@ -16,7 +16,9 @@ const RenderMessages = ({ messages }) => {
     <>
       <div className="mb-3 messages myMessage">
         {/* <div className="Avatar"><img src={"https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg"}></img></div> */}
-        <div className="Avatar"><img src={profile_pic==='nothing'?"https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg" : profile_pic }></img></div>
+        <div className="Avatar">
+          <img src={profile_pic==='nothing'?"https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg" : profile_pic }></img>
+        </div>
         <div className="Message">{message}</div>
         <div className="Username">{username}</div>
         <div className="Timestamp">{time}</div>
