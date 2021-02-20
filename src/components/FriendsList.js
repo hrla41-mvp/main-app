@@ -21,7 +21,7 @@ class FriendsList extends React.Component {
     return(
       <>
       <div className="FriendsList">
-        <div className="RoomNameCard">{currentRoom.room_name}</div>
+        {/* <div className="RoomNameCard">{currentRoom.room_name}</div> */}
         <div className="PeopleInRoom">People In The Room
           {(currentRoom.users) ? <RenderPeople currentRoom={currentRoom} /> : null}
         </div>
