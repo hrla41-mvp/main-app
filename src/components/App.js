@@ -40,7 +40,6 @@ export default class App extends Component {
             this.setState({
               userFirstName: res.data[0].first_name
             })
-            // console.log(res.data[0].first_name)
           })
 
       } else {
@@ -78,7 +77,6 @@ export default class App extends Component {
           <Nav.Link className="navLink" href="/MessageApp">MessageApp</Nav.Link>
         </Nav>
         <Form inline>
-          {/* <Button variant="light" onClick={this.logOut}>Log Out</Button> */}
           <Dropdown>
             <Dropdown.Toggle style={{background: '#55dc9e', color: 'black', border: '1px solid #55dc9e', minWidth: '150px', marginRight: '20px', textAlign: 'center', borderRadius: '10px'}} className="dropdownMenu" id="dropdown-basic">
               {`Hello ${this.state.userFirstName}`}
@@ -118,22 +116,3 @@ export default class App extends Component {
     )
   }
 }
-/*<Nav className="mr-auto">
-<Nav.Link href="/SignUp">Sign Up</Nav.Link>
-<Nav.Link href="/Login">Log In</Nav.Link>
-<Nav.Link href="/MessageApp">MessageApp</Nav.Link>
-</Nav>
-
-
-
-{/* { (this.state.userIsSignedIn) ?
-              <Nav className="mr-auto">
-                <Nav.Link href="/MessageApp">MessageApp</Nav.Link>
-              </Nav> :
-              <Nav className="mr-auto">
-                <Nav.Link href="/SignUp">Sign Up</Nav.Link>
-                <Nav.Link href="/Login">Log In</Nav.Link>
-              </Nav>} }
-*/
-
-

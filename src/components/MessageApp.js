@@ -14,8 +14,8 @@ export default class MessageApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentRoom: {}, // <----- MUST STAY
-      socket: {}, // <------- MUST STAY HERE OR CHAT ROOM CONNECTION WILL BE LOST
+      currentRoom: {},
+      socket: {},
       messages: [],
       message: '',
       roomsUsers: [],
@@ -23,7 +23,7 @@ export default class MessageApp extends Component {
       room: 'Bedroom',
       chatRoomsList: ['defaultRoom', 'testRoom'],
       userObj: {},
-      user: {}, ///<----- {}
+      user: {},
       username: '',
     }
 
@@ -35,7 +35,6 @@ export default class MessageApp extends Component {
     this.updateCurrentRoomOnLoad = this.updateCurrentRoomOnLoad.bind(this)
   }
   componentDidMount() {
-    // this.configureSocket();
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         var uid = user.uid;
@@ -46,12 +45,8 @@ export default class MessageApp extends Component {
 
   getUserInfo(user) {
     return axios.get(`/slackreactor/user/${user}`)
-    // axios request to get logged in user obj
     .then((res) => {
       let obj = res.data[0];
-      //  Grab currentRoom
-      // Grab messages from room
-      // grab users from room
       return axios.get(`/slackreactor/rooms/${obj.rooms[0]}`)
         .then((res) => {
           return axios.get(`/slackreactor/roomUsers/${res.data[0].room_name}`)
@@ -88,8 +83,6 @@ export default class MessageApp extends Component {
       });
   }
   getRooms() {
-    // newArray was set to copy initial chatRoomsList
-    // to temporarily help debugging
     let newArray = [...this.state.chatRoomsList];
     return axios.get('/slackreactor/rooms')
       .then((response) => {
@@ -113,7 +106,6 @@ export default class MessageApp extends Component {
     for (let i = 0; i < data.length; i++) {
       if (data[i].messages.length === 0) continue;
       for (let j = 0; j < data[i].messages.length; j++) {
-        //{username, pictures}
         const match = data[i].messages[j].match(reggir);
         if (!match || match.length === 0) continue;
         if (!usersNames.includes(`${match[2]} ${match[3]}`)) {
@@ -129,8 +121,6 @@ export default class MessageApp extends Component {
           message: `${match[5]}`,
           time: `${match[6]}`
         });
-        // TBNoted: SENDERS & TIMESTAMPS CAN BE FOUND IN THE MATCH ARRAY
-        // PLEASE USE FOR DISPLAYING MESSAGE SENDERS
       }
     }
     return { messagesList, usersPics };
@@ -248,16 +238,8 @@ export default class MessageApp extends Component {
           time: msg.time,
           user_id: msg.user_id
         })
-        // messageCopy.push({ message: msg, avatar: 'https://shamadistrict.gov.gh/wp-content/uploads/2020/09/avatar-image.jpg' })
         setter(messageCopy);
       });
-// -------------- Main event to update state for current user's in room -------------------------------------
-      // this.state.socket.on('userWelcome', ({ newUser, connectedUsersList }) => {
-      //   this.setState({ roomsUsers: connectedUsersList });
-      // });
-      // this.state.socket.on('disconnection', (updatedList) => {
-      //   this.setState({ roomsUsers: updatedList.connectedUsersList });
-      // })
     });
   }
   render() {
@@ -281,7 +263,6 @@ export default class MessageApp extends Component {
           <Col className="messageAppCol" >
             <FriendsList
               currentRoom={this.state.currentRoom || 'broken'}
-              // userObj={this.state.userObj}
               profilePics={this.state.profilePics}
             />
           </Col>

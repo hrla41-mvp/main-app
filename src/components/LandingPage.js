@@ -12,7 +12,7 @@ const LandingPage = (props) => {
   useEffect(() => {
     if (!vantaEffect) {
       setVantaEffect(BIRDS({
-        el: "#dynamicBackground"/*myRef.current*/,
+        el: "#dynamicBackground",
         mouseControls: true,
         touchControls: true,
         gyroControls: false,
@@ -148,35 +148,8 @@ const LandingPage = (props) => {
           </Row>
         </Col>
       </Row>
-      {/* <Row className="footerSection">
-        <Col>Hello</Col>
-      </Row> */}
     </Container>
   )
-
-
-
-  // <div id="dynamicBackground" ref={myRef}>
-  //   Foreground content goes here
-  // </div>
 }
-
-// const LandingPage = () => {
-// return(
-//     <Container className="landingPage" fluid>
-//       <Row className="nameOfApp">
-//         <Col id="dynamicBackground">NAME HERE</Col>
-//       </Row>
-//       <Row className="splitSection">
-//         <Col className="splitSectionLeftCol">1 of 2</Col>
-//         <Col className="splitSectionRightCol">2 of 2</Col>
-//       </Row>
-//       <Row className="footerSection">
-//         <Col>Hello</Col>
-//       </Row>
-
-//     </Container>
-// )
-// };
 
 export default LandingPage;

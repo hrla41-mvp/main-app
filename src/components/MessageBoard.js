@@ -53,26 +53,3 @@ class MessageBoard extends React.Component {
 }
 export default MessageBoard;
 
-/*
-  render() {
-    return (
-      <div className="MessageBoardContainer">
-        <div>
-          <h1 className="roomName">{this.props.user.room}</h1>
-        </div>
-        <div>
-          {this.props.user.messages.map(element => (
-            <RenderMessages messages={element} key={Math.random()} />
-          ))}
-        </div>
-        <div>
-            <input className="newMessageInput" type="text" placeholder="Whats on your mind?"
-            onChange={this.handleInput}
-            onKeyPress={this.handleSendMessage}
-            />
-        </div>
-      </div>
-    )
-  }
-*/
-

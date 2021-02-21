@@ -47,7 +47,6 @@ export default function SignUp() {
       return alert('Passwords do not match')
     }
 
-    // Send the log in information
     firebase.auth().createUserWithEmailAndPassword(email, password1)
     .then((userCredential) => {
 
@@ -58,8 +57,6 @@ export default function SignUp() {
       } else return {data:'nothing', userCredential};
     })
     .then(({data, userCredential})=> {
-      // Signed in
-      // alert(`User created: ${userCredential.user.uid}`);
         return axios.post('/slackreactor/users', {
           user_id: userCredential.user.uid,
           first_name: firstName,
@@ -67,19 +64,15 @@ export default function SignUp() {
           cohort: cohort,
           staff: false,
           friends: [],
-          profile_pic: data, // --> S3 link
+          profile_pic: data,
           last_login: '10:00am',
           rooms: rooms
         })
         .then(()=> {
-          // console.log('I MADE IT THIS FAR')
           return axios.put(`/slackreactor/addUserToRoomOnSignUp/${cohort}`, {
             username: `${firstName} ${lastName}`
           });
         })
-
-      // })
-        // add a put request to add the new user to the default rooms.
       })
       .catch((error) => {
         console.log(error)

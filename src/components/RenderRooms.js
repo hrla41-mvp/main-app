@@ -2,10 +2,7 @@ import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../css/RenderRooms.css';
 
- // THIS COMPONENT IS TO DYNAMICALLY RENDER ROOMS USE MAP
-
 const RenderRooms = ({ chatRoomsList, updateCurrentRoom, rooms }) => {
-
   const displayChatRooms = () => {
     if (chatRoomsList.length!==0) {
       return rooms.map(item => (
@@ -17,7 +14,6 @@ const RenderRooms = ({ chatRoomsList, updateCurrentRoom, rooms }) => {
       ))
     }
   }
-
   return (
     <>
       {displayChatRooms()}
@@ -26,13 +22,3 @@ const RenderRooms = ({ chatRoomsList, updateCurrentRoom, rooms }) => {
 };
 
 export default RenderRooms;
-
-/*
-    <>
-      <div className="RoomsCard" >
-        <div>
-          <div className="RoomsName">Room Name Here</div>
-        </div>
-      </div>
-    </>
-*/

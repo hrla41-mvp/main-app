@@ -3,10 +3,6 @@ import '../css/RenderMessages.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import moment from 'moment';
 
-//username / avatare / message / time
-
-// If passed in messages are from user render float right else render float left
-// This module should take in a (message , avatar, user, signedin user) signinuser to be able to tell whether or not we will render to the right or left
 const RenderMessages = ({ messages, fullName }) => {
   const username = messages.username;
   const profile_pic = messages.profile_pic;
