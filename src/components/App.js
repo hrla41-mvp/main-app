@@ -29,8 +29,8 @@ export default class App extends Component {
           userIsSignedIn: true,
         })
 
-        if (window.location.href === 'http://localhost:3000/Login' ||
-        window.location.href === 'http://localhost:3000/SignUp'){
+        if (window.location.href === 'https://slackreactor-first-deployment.herokuapp.com/Login' ||
+        window.location.href === 'https://slackreactor-first-deployment.herokuapp.com/SignUp'){
           window.location.href = "/MessageApp";
         }
 
@@ -48,7 +48,7 @@ export default class App extends Component {
         this.setState({
           userIsSignedIn: false
         })
-        if (window.location.href === 'http://localhost:3000/MessageApp') {
+        if (window.location.href === 'https://slackreactor-first-deployment.herokuapp.com/MessageApp') {
           window.location.href = "/";
         }
       }

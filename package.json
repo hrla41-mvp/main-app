@@ -43,7 +43,7 @@
     "eject": "react-scripts eject",
     "server": "nodemon server/index.js",
     "builder": "webpack --watch",
-    "start": "node server/index.js"
+    "start": "node server/index.js && npm run buidler"
   },
   "browserslist": {
     "production": [
