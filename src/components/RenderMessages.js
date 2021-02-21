@@ -11,7 +11,7 @@ const RenderMessages = ({ messages, fullName }) => {
   const username = messages.username;
   const profile_pic = messages.profile_pic;
   const message = messages.message;
-  const time = moment(messages.timestamp).fromNow()
+  const time = moment(messages.time).fromNow()
 
   if (fullName === username) {
     return (
