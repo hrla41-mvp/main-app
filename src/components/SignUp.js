@@ -47,30 +47,39 @@ export default function SignUp() {
     // Send the log in information
     firebase.auth().createUserWithEmailAndPassword(email, password1)
     .then((userCredential) => {
-      let formData = new FormData();
-      formData.append('profilePic', profilePic);
-      return axios.post('/slackreactor/upload', formData)
-      .then((response)=> {
-        // Signed in
-        console.log('I MADE IT THIS FAR')
-        // alert(`User created: ${userCredential.user.uid}`);
-            return axios.post('/slackreactor/users', {
-            user_id: userCredential.user.uid,
-            first_name: firstName,
-            last_name: lastName,
-            cohort: cohort,
-            staff: false,
-            friends: [],
-            profile_pic: response.data, // --> S3 link
-            last_login: '10:00am',
-            rooms: ['HEllO','ROOMID']
-          })
-          .then(()=> {
-            return axios.put(`/slackreactor/addUserToRoom/HEllO`, {
-              username: `${firstName} ${lastName}`
-            });
-          })
+
+      if (profilePic!=='') {
+        let formData = new FormData();
+        formData.append('profilePic', profilePic);
+        return axios.post('/slackreactor/upload', formData).then((response)=> ({data: response.data, userCredential}))
+      } else return {data:'nothing', userCredential};
+    })
+    .then(({data, userCredential})=> {
+      // Signed in
+      // alert(`User created: ${userCredential.user.uid}`);
+        return axios.post('/slackreactor/users', {
+          user_id: userCredential.user.uid,
+          first_name: firstName,
+          last_name: lastName,
+          cohort: cohort,
+          staff: false,
+          friends: [],
+          profile_pic: data, // --> S3 link
+          last_login: '10:00am',
+          rooms: ['HEllO','ROOMID']
         })
+        .then(()=> {
+          // console.log('I MADE IT THIS FAR')
+          return axios.put(`/slackreactor/addUserToRoom/HEllO`, {
+            username: `${firstName} ${lastName}`
+          });
+        })
+        .then(()=> {
+          return axios.put(`/slackreactor/addUserToRoom/ROOMID`, {
+            username: `${firstName} ${lastName}`
+          });
+        })
+      // })
         // add a put request to add the new user to the default rooms.
       })
       .catch((error) => {

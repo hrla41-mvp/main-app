@@ -29,13 +29,14 @@ export default class App extends Component {
           userIsSignedIn: true,
         })
 
-        // if (window.location.href === 'http://localhost:3000/Login' ||
-        // window.location.href === 'http://localhost:3000/SignUp'){
-        //   window.location.href = "/MessageApp";
-        // }
+        if (window.location.href === 'http://localhost:3000/Login' ||
+        window.location.href === 'http://localhost:3000/SignUp'){
+          window.location.href = "/MessageApp";
+        }
 
         Axios.get(`/slackreactor/user/${uid}`)
           .then((res) => {
+            console.log(res.data);
             this.setState({
               userFirstName: res.data[0].first_name
             })
