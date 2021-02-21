@@ -73,7 +73,7 @@ export default function SignUp() {
         })
         .then(()=> {
           // console.log('I MADE IT THIS FAR')
-          return axios.put(`/slackreactor/addUserToRoom/${cohort}`, {
+          return axios.put(`/slackreactor/addUserToRoomOnSignUp/${cohort}`, {
             username: `${firstName} ${lastName}`
           });
         })
