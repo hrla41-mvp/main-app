@@ -18,10 +18,11 @@ const axios = require('axios');
 // MIDDLEWARE
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-// app.use(express.static(path.join(__dirname, '..', 'public')));
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '..', 'build')));
+} else {
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 }
 
 //ADDS A ROOM TO DATABASE

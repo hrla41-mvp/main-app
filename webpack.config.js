@@ -6,6 +6,9 @@ const OUT_DIR = path.join(__dirname, 'public')
 
 module.exports = {
   mode: 'development',
+  node: {
+    fs: 'empty'
+  },
   entry: SRC_DIR,
   output: {
     path: path.join(OUT_DIR),
