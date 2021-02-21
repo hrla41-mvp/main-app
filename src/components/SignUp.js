@@ -152,10 +152,18 @@ export default function SignUp() {
               We'll never share your information with anyone else.
             </Form.Text>
           <a className="d-block mt-2 already" style={{width: '250px', color: 'white'}} href="/Login">Already have an account? Log In</a>
-          <Button className="mt-3" variant="primary" type="submit" style={{backgroundColor: '#55dc9e', color: 'black', border: 'none'}}>
+          <Button className="mt-3" variant="primary" type="submit" style={{backgroundColor: '#55dc9e', color: 'black', border: 'none', marginBottom: '1rem'}}>
             Submit
           </Button>
         </Form>
+        <Row>
+        <Col style={{color: 'white'}}>Exploring? Please login with Credentials :
+        <div className="alert alert-success mt-3" role="alert">
+          <div>Email: {"<enter Credentials here>"}</div>
+          <div>Password: {"<enter Credentials here>"}</div>
+        </div>
+            </Col>
+        </Row>
       </Container>
   )
 }
