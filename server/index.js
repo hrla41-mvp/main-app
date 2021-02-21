@@ -7,6 +7,11 @@ const path = require('path');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const pool = require('../DB/index.js');
+const upload = require('./s3Model.js');
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const uuid = require('uuid').v4;
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -24,6 +29,13 @@ app.post('/slackreactor/rooms', async (req, res) => {
     console.error(err.message)
   }
 });
+
+
+// UPLOAD IMAGE FILE
+app.post('/slackreactor/upload', upload.array('profilePic'), (req, res) => {
+  // res.json({ status: 'OK', uploaded: req.files.length });
+  res.status(200).send(req.files[0].location);
+})
 
 //UPDATES MESSAGES IN A ROOM
 app.put('/slackreactor/rooms/messages:id', async (req, res) => {

@@ -36,6 +36,7 @@ export default class App extends Component {
 
         Axios.get(`/slackreactor/user/${uid}`)
           .then((res) => {
+            console.log(res.data);
             this.setState({
               userFirstName: res.data[0].first_name
             })
