@@ -227,6 +227,30 @@ app.put('/slackreactor/addUserToRoom/:room_name', async (req, res) => {
     .catch(err => res.status(404).send(err));
 });
 
+//ADD USER TO ROOM ON SIGN UP
+app.put('/slackreactor/addUserToRoomOnSignUp/:room_name', async (req, res) => {
+
+  let query = `UPDATE Rooms SET users = array_append(users, '${req.body.username}') WHERE room_name = 'Hack Reactor' RETURNING room_name, messages, users, room_id`;
+  let query1 = `UPDATE Rooms SET users = array_append(users, '${req.body.username}') WHERE room_name = '${req.params.room_name}' RETURNING room_name, messages, users, room_id`;
+  // Scenario when they are not in cohort
+  if (req.params.room_name !== 'None') {
+    return await pool.query(query)
+    .then((dbResponse) => res.status(200).send(dbResponse))
+    .catch(err => res.status(404).send(err));
+  } else {
+    // Scenario when they are in a cohort
+    return await pool.query(query)
+    .then(() => {
+      pool.query(query1)
+        .then((dbResponse) => res.status(200).send(dbResponse))
+    })
+    .catch(err => res.status(404).send(err));
+  }
+
+    // .then((dbResponse) => res.status(200).send(dbResponse))
+    // .catch(err => res.status(404).send(err));
+});
+
 //RETRIEVES ALL OF THE USERS FOR A PARTICULAR ROOM
 app.get(`/slackreactor/roomUsers/:room`, async (req, res) => {
   console.log(req.params)
