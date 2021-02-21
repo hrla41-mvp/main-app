@@ -1,5 +1,7 @@
 const Pool = require('pg').Pool;
-require('dotenv').config();
+require('dotenv').config({
+  path: `${__dirname}/../.env`
+});
 
 
 const devConfig = {
@@ -17,5 +19,9 @@ const proConfig = {
 const pool = new Pool(
   process.env.NODE_ENV === 'production' ? proConfig : devConfig
 );
+
+if (process.env.NODE_ENV === 'production'){
+  console.log('Connection in production mode')
+}
 
   module.exports = pool; //5432
