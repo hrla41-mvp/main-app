@@ -11,9 +11,10 @@ export default function SignUp() {
   const [password2, setPassword2] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [cohort, setCohort] = useState('none');
+  const [cohort, setCohort] = useState('None');
   const [staff, setStaff] = useState(false);
   const [profilePic, setProfilePic] = useState('');
+  const [rooms, setRooms] = useState(['Hack Reactor']);
 
 
   function handleFormInput(e) {
@@ -29,9 +30,11 @@ export default function SignUp() {
       setLastName(e.target.value);
     } else if (e.target.name === 'cohort') {
       setCohort(e.target.value);
+      if (e.target.value !== 'None') {
+        setRooms(['Hack Reactor', e.target.value])
+      }
     } else if (e.target.name === 'staff') {
       setStaff(e.target.checked);
-      console.log(e.target.checked)
     } else if (e.target.name === 'profilePic') {
       setProfilePic(e.target.files[0]);
     }
@@ -66,19 +69,15 @@ export default function SignUp() {
           friends: [],
           profile_pic: data, // --> S3 link
           last_login: '10:00am',
-          rooms: ['HEllO','ROOMID']
+          rooms: rooms
         })
         .then(()=> {
           // console.log('I MADE IT THIS FAR')
-          return axios.put(`/slackreactor/addUserToRoom/HEllO`, {
+          return axios.put(`/slackreactor/addUserToRoom/${cohort}`, {
             username: `${firstName} ${lastName}`
           });
         })
-        .then(()=> {
-          return axios.put(`/slackreactor/addUserToRoom/ROOMID`, {
-            username: `${firstName} ${lastName}`
-          });
-        })
+
       // })
         // add a put request to add the new user to the default rooms.
       })
