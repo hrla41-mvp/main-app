@@ -7,6 +7,7 @@ import FriendsList from './FriendsList';
 import io from "socket.io-client";
 import axios from 'axios';
 import firebase from '../Firebase';
+import moment from 'moment';
 
 const SERVER = 'localhost:3000';
 
@@ -184,7 +185,7 @@ export default class MessageApp extends Component {
       username: `${userObj.first_name} ${userObj.last_name}`,
       profile_pic: userObj.profile_pic,
       message: message,
-      time: Date.now()
+      timestamp: moment()
     }
       this.state.socket.emit('message', { room: room, message: chatMessage });
   }
