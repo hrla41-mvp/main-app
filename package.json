@@ -43,7 +43,8 @@
     "eject": "react-scripts eject",
     "server": "nodemon server/index.js",
     "builder": "webpack --watch",
-    "start": "node server/index.js && npm run buidler"
+    "heroku-postbuild": "webpack --watch",
+    "start": "node server/index.js"
   },
   "browserslist": {
     "production": [
