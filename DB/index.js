@@ -22,6 +22,8 @@ const pool = new Pool(
 
 if (process.env.NODE_ENV === 'production'){
   console.log('Connection in production mode')
+} else {
+  console.log('ENV is a piece of shit and doesnt work')
 }
 
   module.exports = pool; //5432
