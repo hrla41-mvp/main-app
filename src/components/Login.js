@@ -32,22 +32,27 @@ export default function Login() {
 
   return (
     <Container className="signUpForm mt-5">
-        <Form style={{color: '#55dc9e'}} onSubmit={handleFormSubmit}>
-          <Form.Group controlId="formBasicEmail" onChange={handleFormInput}>
-            <Form.Label>Email address</Form.Label>
-            <Form.Control required type="email" name="email" placeholder="Enter email" style={{backgroundColor: '#000', color: 'white'}} />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword" onChange={handleFormInput}>
-            <Form.Label>Password</Form.Label>
-            <Form.Control required type="password" name="password1" placeholder="Password" style={{backgroundColor: '#000', color: 'white'}} />
-          </Form.Group>
-          <a className="d-block" href="/SignUp" style={{width: '250px', color: 'white'}} >Don't have an account? Sign Up</a>
-          <Button className="mt-3" variant="primary" type="submit" style={{backgroundColor: '#55dc9e', color: 'black', border: 'none'}}>
-            Submit
+      <Form style={{ color: '#55dc9e' }} onSubmit={handleFormSubmit}>
+        <Form.Group controlId="formBasicEmail" onChange={handleFormInput}>
+          <Form.Label>Email address</Form.Label>
+          <Form.Control required type="email" name="email" placeholder="Enter email" style={{ backgroundColor: '#000', color: 'white' }} />
+        </Form.Group>
+        <Form.Group controlId="formBasicPassword" onChange={handleFormInput}>
+          <Form.Label>Password</Form.Label>
+          <Form.Control required type="password" name="password1" placeholder="Password" style={{ backgroundColor: '#000', color: 'white' }} />
+        </Form.Group>
+        <a className="d-block" href="/SignUp" style={{ width: '250px', color: 'white' }} >Don't have an account? Sign Up</a>
+        <Button className="mt-3" variant="primary" type="submit" style={{ backgroundColor: '#55dc9e', color: 'black', border: 'none', marginBottom: '1rem' }}>
+          Submit
           </Button>
-        </Form>
-        <Row>
-            <Col>If you are just exploring around the app please login with provided credentials</Col>
+      </Form>
+      <Row>
+        <Col style={{color: 'white'}}>Exploring? Please login with Credentials :
+        <div className="alert alert-success mt-3" role="alert">
+          <div>Email: {"<enter Credentials here>"}</div>
+          <div>Password: {"<enter Credentials here>"}</div>
+        </div>
+            </Col>
         </Row>
       </Container>
   )
