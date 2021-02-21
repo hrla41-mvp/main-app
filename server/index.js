@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = 3000;
+const port = process.env.PORT || 3000;
 const path = require('path');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -12,10 +12,17 @@ const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const uuid = require('uuid').v4;
+const axios = require('axios');
+
+
+// MIDDLEWARE
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '..', 'public')));
-const axios = require('axios');
+// app.use(express.static(path.join(__dirname, '..', 'public')));
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '..', 'build')));
+}
 
 //ADDS A ROOM TO DATABASE
 app.post('/slackreactor/rooms', async (req, res) => {
@@ -359,6 +366,10 @@ io.on('connection', (socket) => {
   });
 
 });
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'build/index.html'))
+})
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
